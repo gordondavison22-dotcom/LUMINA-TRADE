@@ -449,6 +449,40 @@ input { font-family: inherit; }
   .trade-foot-note { font-size: 10.5px; }
 }
 
+
+/* ---------- Mobile fit refinements ---------- */
+@media (max-width: 620px) {
+  .screen { min-height: 100svh; }
+  .topbar { gap: 10px; padding: 12px 14px; }
+  .brand-name { font-size: 17px; }
+  .user-cluster { gap: 8px; }
+  .user-cluster .btn { padding: 9px 11px; font-size: 12px; }
+  .dash { width: min(100% - 22px, 1180px); padding: 18px 0 34px; }
+  .dash-grid, .dash-main, .dash-side { min-width: 0; width: 100%; }
+  .card, .modal-card { min-width: 0; }
+  .action-row { display: grid; grid-template-columns: 1fr; }
+  .action-row .btn { min-height: 46px; }
+  .trade-head { align-items: flex-start; }
+  .trade-live { margin-left: auto; max-width: 42%; }
+  .trade-price { overflow-wrap: anywhere; text-align: right; }
+  .trade-chart-box, .trade-reel { max-width: 100%; min-width: 0; }
+  #trade-chart, #balance-chart { max-width: 100%; }
+  .coin-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .preset-row { flex-wrap: wrap; }
+  .field input, .input-symbol, .addr-copy { max-width: 100%; min-width: 0; }
+  .addr-copy input { width: 100%; min-width: 0; }
+  .modal { padding: 12px; align-items: flex-start; overflow-y: auto; }
+  .modal-card { width: 100%; max-height: calc(100svh - 24px); overflow-y: auto; margin: auto 0; }
+  .activity li { overflow-wrap: anywhere; }
+}
+@media (max-width: 380px) {
+  .dash { width: calc(100% - 16px); }
+  .card { padding: 14px 12px; }
+  .balance-card { padding: 18px 12px 14px; }
+  .greet-title { font-size: 21px; }
+  .user-avatar { width: 32px; height: 32px; }
+}
+
 /* ---------- deposit crypto picker + address + timer ---------- */
 .coin-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
 .coin-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 13px 6px; border-radius: 13px; border: 1px solid var(--stroke); background: rgba(255,255,255,.04); color: var(--text); cursor: pointer; transition: .18s; }
@@ -652,7 +686,7 @@ input { font-family: inherit; }
     <div class="hero">
       <span class="hero-eyebrow"><i class="pulse-dot"></i> Live markets · Real-time prices</span>
       <h1 class="hero-title">Trade crypto the way<br>you <span class="grad-text">dream of it</span>.</h1>
-      <p class="hero-sub">A secure, beautiful way to deposit, withdraw and trade cryptocurrency with live market data.</p>
+      <p class="hero-sub">A demo portfolio interface for exploring deposits, withdrawals and crypto market data.</p>
       <div class="hero-stats">
         <div class="hero-stat"><b>$0</b><span>Deposit fees</span></div>
         <div class="hero-stat"><b>100%</b><span>Secure assets</span></div>
@@ -697,7 +731,7 @@ input { font-family: inherit; }
         <p class="form-error" id="signup-error"></p>
       </form>
 
-      <p class="auth-foot">Your funds are protected with bank-grade security.</p>
+      <p class="auth-foot">Demo interface only. No real deposits, withdrawals or trades are processed by this HTML file.</p>
     </div>
   </div>
 
@@ -751,7 +785,7 @@ input { font-family: inherit; }
               <span class="act-ico">↑</span> Withdraw
             </button>
             <button class="btn btn-action btn-trade" id="trade-btn">
-              <span class="act-ico">⚡</span> Start trade
+              <span class="act-ico">⚡</span> Trading automation
             </button>
           </div>
         </div>
@@ -775,8 +809,8 @@ input { font-family: inherit; }
             <div class="trade-head">
               <div class="modal-ico ico-violet">⚡</div>
               <div class="trade-head-txt">
-                <h3 class="modal-title">Start trade</h3>
-                <p class="modal-sub">BTC/USD <span class="feed-dot off" id="feed-dot"></span><span id="feed-src">Connecting...</span></p>
+                <h3 class="modal-title">Crypto Trading Automation</h3>
+                <p class="modal-sub">Market overview · BTC/USD <span class="feed-dot off" id="feed-dot"></span><span id="feed-src">Connecting...</span></p>
               </div>
               <div class="trade-live">
                 <span class="trade-price" id="trade-live-price">—</span>
@@ -791,7 +825,7 @@ input { font-family: inherit; }
             </div>
             <div class="inline-trade-foot">
               <button class="btn btn-ghost" id="trade-close-btn" type="button">← Back to positions</button>
-              <span class="trade-foot-note">Live process — real market feed streaming</span>
+              <span class="trade-foot-note">Automation status is saved. Live order execution requires a connected trading service.</span>
             </div>
           </div>
         </div>
@@ -1011,14 +1045,10 @@ input { font-family: inherit; }
         <input type="number" id="withdraw-amount" min="1" step="10" placeholder="0">
       </div>
     </label>
-    <p class="field-hint">Minimum total deposited to withdraw: <b>$30,000</b>. Amount cannot exceed available balance.</p>
+    <p class="field-hint">Withdrawals are limited to your available balance. Any network or processing fees should be shown before confirmation.</p>
 
     <button class="btn btn-primary btn-block" id="withdraw-confirm">Request withdrawal</button>
     <p class="form-error" id="withdraw-error"></p>
-    <div id="withdraw-denied" class="denied hidden">
-      <span class="denied-ico">⚠️</span>
-      <p><b>Minimum deposit of $30,000 is required to make a withdrawal.</b></p>
-    </div>
   </div>
 </div>
 
@@ -1047,8 +1077,7 @@ const adminCreds = () => store.get(KEYS.admin, { user: ADMIN_USER, pass: ADMIN_P
 const recKey = (email) => 'lt_record_' + email;
 
 const MIN_DEPOSIT = 1000;
-const MIN_WITHDRAW_DEPOSIT = 30000;
-const TRADE_DAILY_RATE = 0.15; // 15% daily growth when trade is active
+// Trading status is persisted locally; real execution requires a trusted server-side trading service.
 const DEPOSIT_COINS = [
   { sym: 'BTC', name: 'Bitcoin',  net: 'BTC',    cls: 'ico-btc', addr: 'bc1qh8dsm2wzhrnd50z5fsqp6dn69rm2qpc2cj5h86' },
   { sym: 'ETH', name: 'Ethereum', net: 'ERC-20', cls: 'ico-eth', addr: '0x0a19b57043E1766F3d7fda42B7f9E2978c5A7F5D' },
@@ -1143,13 +1172,13 @@ function enterCloudSession(authUser, profile, isNew, quiet) {
   $('#user-avatar').textContent = (cloudSession.name[0] || 'T').toUpperCase();
   $('#deposit-btn').classList.add('glow-hint');
   updateAdminUi();
-  // Catch up offline growth
+  // Restore saved automation status
   if (rec.tradeStartedAt) {
     const gain = settleTradeGrowth();
     startTradeGrowth(true);
     if (gain > 0 && !quiet) {
-      pushActivity('trade', 'Offline growth credited', 'Balance compounded while you were away', gain);
-      toast('success', 'Growth while offline', fmtUsd(gain) + ' earned at 15% daily while you were away.');
+      pushActivity('trade', 'Automation resumed', 'Your saved automation setting was restored', gain);
+      toast('success', 'Automation resumed', 'Your saved automation setting is active again.');
     }
   }
   renderAll();
@@ -1191,7 +1220,7 @@ function stopUserPoll() { if (userPollId) { clearInterval(userPollId); userPollI
 function exitToLanding() {
   stopUserPoll();
   stopAdminPoll();
-  pauseTradeTicker(); // growth continues offline — only the live ticker stops
+  pauseTradeTicker(); // the saved automation status remains enabled
   closeInlineTrade();
   session = null; rec = null; cloudSession = null; lastDeposited = null;
   store.del(KEYS.session);
@@ -1407,13 +1436,13 @@ function openSession(email, name, isNew) {
   $('#greet-name').textContent = name.split(' ')[0];
   $('#user-avatar').textContent = (name.trim()[0] || 'T').toUpperCase();
   $('#deposit-btn').classList.add('glow-hint');
-  // Catch up any offline growth from previous sessions
+  // Restore saved automation status from previous sessions
   if (rec.tradeStartedAt) {
     const gain = settleTradeGrowth();
     startTradeGrowth(true);
     if (gain > 0) {
-      pushActivity('trade', 'Offline growth credited', 'Balance compounded while you were away', gain);
-      toast('success', 'Growth while offline', fmtUsd(gain) + ' earned at 15% daily while you were away.');
+      pushActivity('trade', 'Automation resumed', 'Your saved automation setting was restored', gain);
+      toast('success', 'Automation resumed', 'Your saved automation setting is active again.');
     }
   }
   renderAll();
@@ -1431,7 +1460,7 @@ function openSession(email, name, isNew) {
 async function logout() {
   if (session && session.cloud) {
     stopUserPoll();
-    pauseTradeTicker(); // permanent growth continues while offline
+    pauseTradeTicker(); // the saved automation status remains enabled
     try { if (sb) await sb.auth.signOut(); } catch (ex) {}
     return exitToLanding();
   }
@@ -1464,7 +1493,7 @@ function renderAll() {
   renderDepositPresets();
   seedEquity();
   if (isTradeActive()) {
-    $('#balance-status').textContent = 'Trading · +15% daily';
+    $('#balance-status').textContent = 'Automation enabled';
   } else {
     $('#balance-status').textContent = rec.balance > 0 ? 'Ready to trade' : 'Make a deposit to begin';
   }
@@ -1857,7 +1886,6 @@ function openWithdraw() {
   $('#withdraw-error').textContent = '';
   $('#withdraw-address').value = '';
   $('#withdraw-amount').value = '';
-  $('#withdraw-denied').classList.add('hidden');
   $('#withdraw-address-wrap').classList.add('hidden');
   $$('#withdraw-dests .dest-card').forEach((c) => c.classList.remove('active'));
   openModal('withdraw-modal');
@@ -1868,26 +1896,13 @@ function pickDestination(dest) {
   withdrawDest = dest;
   $('#withdraw-address-wrap').classList.toggle('hidden', dest !== 'address');
   $('#withdraw-error').textContent = '';
-  $('#withdraw-denied').classList.add('hidden');
 
-  // Require at least $30k total deposited to allow withdrawals
-  if (!rec || (rec.deposited || 0) < MIN_WITHDRAW_DEPOSIT) {
-    $('#withdraw-denied').classList.remove('hidden');
-    pushActivity('alert', 'Withdrawal blocked', 'Minimum deposit of $30,000 is required to make a withdrawal');
-    saveRecord();
-  }
 }
 
 async function confirmWithdraw() {
   const err = $('#withdraw-error');
   if (processBusy) return;
-  if (!rec || (rec.deposited || 0) < MIN_WITHDRAW_DEPOSIT) {
-    $('#withdraw-denied').classList.remove('hidden');
-    err.textContent = '';
-    pushActivity('alert', 'Withdrawal blocked', 'Minimum deposit of $30,000 is required to make a withdrawal');
-    saveRecord();
-    return;
-  }
+  if (!rec) { err.textContent = 'Your account record is unavailable.'; return; }
   if (!withdrawDest) {
     err.textContent = 'Choose a withdrawal destination.';
     return;
@@ -1922,7 +1937,7 @@ async function confirmWithdraw() {
 /* ============================================================
    START TRADE - REAL MARKET FEED (canvas chart)
    Live BTC/USD price and 1-minute candles from public APIs.
-   Primary: Gate.io   Fallbacks: CoinGecko / Bitstamp.
+   Sources: CoinGecko / Bitstamp.
    Altcoin prices come from CoinGecko; a local cache makes the
    chart render instantly on the next visit even before the
    first network reply.
@@ -2019,16 +2034,7 @@ function seedTradeChart() {
   dispChg = btc.chg24 || 0;
 }
 
-/* ---------- BTC quote (Gate.io, CoinGecko, Bitstamp) ---------- */
-async function btcFromGate() {
-  const j = await getJSON('https://api.gateio.ws/api/v4/spot/tickers?currency_pair=BTC_USDT', 8000);
-  const row = Array.isArray(j) ? j[0] : null;
-  if (!row) throw new Error('gate empty');
-  const p = parseFloat(row.last);
-  const c = parseFloat(row.change_percentage);
-  if (!sanePrice(p, 1000, 1e6)) throw new Error('gate price');
-  return { price: p, chg: isNum(c) ? c : 0, name: 'Gate.io' };
-}
+/* ---------- BTC quote (CoinGecko, Bitstamp) ---------- */
 async function btcFromCoinGecko() {
   const j = await getJSON('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true', 8000);
   const d = j && j.bitcoin;
@@ -2058,13 +2064,10 @@ function pushLivePoint(p) {
 
 async function pollBtc() {
   let q = null;
-  try { q = await btcFromGate(); feedState.src = 'gate'; }
+  try { q = await btcFromCoinGecko(); feedState.src = 'coingecko'; }
   catch (e1) {
-    try { q = await btcFromCoinGecko(); feedState.src = 'coingecko'; }
-    catch (e2) {
-      try { q = await btcFromBitstamp(); feedState.src = 'bitstamp'; }
-      catch (e3) { /* keep previous quote */ }
-    }
+    try { q = await btcFromBitstamp(); feedState.src = 'bitstamp'; }
+    catch (e2) { /* keep previous quote */ }
   }
   if (q) {
     const a = ASSETS[0];
@@ -2079,14 +2082,6 @@ async function pollBtc() {
 }
 
 /* ---------- BTC 1-minute candles ---------- */
-async function gateCandles() {
-  const j = await getJSON('https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair=BTC_USDT&interval=1m&limit=120', 10000);
-  if (!Array.isArray(j) || j.length < 2) throw new Error('gate candles');
-  const rows = j.slice().sort((x, y) => Number(x[0]) - Number(y[0]));
-  const closes = rows.map((r) => parseFloat(r[2])).filter(isNum);
-  if (closes.length < 2) throw new Error('gate candles close');
-  return closes;
-}
 async function bstampCandles() {
   const j = await getJSON('https://www.bitstamp.net/api/v2/ohlc/btcusd/?step=60&limit=120', 10000);
   const ohlc = j && j.data && j.data.ohlc;
@@ -2098,11 +2093,8 @@ async function bstampCandles() {
 }
 async function refreshCandles() {
   let closes = null;
-  try { closes = await gateCandles(); }
-  catch (e1) {
-    try { closes = await bstampCandles(); }
-    catch (e2) { return; }
-  }
+  try { closes = await bstampCandles(); }
+  catch (e2) { return; }
   const sane = closes.filter(isNum).slice(-HIST_MAX);
   if (sane.length < 2) return;
   tradeHist = sane;
@@ -2286,82 +2278,54 @@ function tradeChartLoop(ts) {
   requestAnimationFrame(tradeChartLoop);
 }
 
-/* ---------- 15% daily growth — persists forever once started ----------
-   Growth is time-based: even if the user logs out or stays offline for years,
-   the next login compounds the full elapsed time at 15% per day.
+/* ---------- Persistent automation status ----------
+   This browser file can remember that automation was enabled, but it cannot
+   execute orders while the browser/device is offline. Real unattended trading
+   requires a secure server-side worker and exchange API integration. No fixed
+   or guaranteed returns are simulated here.
    --------------------------------------------------------------- */
 let tradeGrowthId = null;
-const TRADE_TICK_MS = 1000;
+const TRADE_TICK_MS = 5000;
 
 function isTradeActive() {
   return !!(rec && rec.tradeStartedAt);
 }
 
-/** Compound balance for the full time since last accrual (or since start). */
 function settleTradeGrowth() {
-  if (!session || !rec || !rec.tradeStartedAt) return 0;
-  const now = Date.now();
-  const last = Number(rec.tradeLastAccruedAt) || Number(rec.tradeStartedAt) || now;
-  const elapsedMs = Math.max(0, now - last);
-  if (elapsedMs < 1) return 0;
-  const days = elapsedMs / 86400000;
-  const factor = Math.pow(1 + TRADE_DAILY_RATE, days);
-  const balBefore = Number(rec.balance) || 0;
-  const balAfter = balBefore * factor;
-  const gain = balAfter - balBefore;
-  if (gain > 0) {
-    rec.balance = balAfter;
-    rec.deposited = (Number(rec.deposited) || 0) + gain;
-  }
-  rec.tradeLastAccruedAt = now;
-  saveRecord();
-  return gain;
+  // Intentionally do not fabricate profits from elapsed time.
+  return 0;
 }
 
 function applyTradeGrowthTick() {
   if (!session || !rec || !rec.tradeStartedAt) return;
-  const gain = settleTradeGrowth();
-  // Light UI update
-  const el = $('#balance-value');
-  if (el) el.textContent = fmtUsd(rec.balance);
-  const depEl = $('#deposited-total');
-  if (depEl) depEl.textContent = fmtUsd(rec.deposited) + ' total deposited';
   const st = $('#balance-status');
-  if (st) st.textContent = 'Trading · +15% daily';
+  if (st) st.textContent = 'Automation enabled';
 }
 
 function startTradeGrowth(quiet) {
   if (!session || !rec) return;
-  // Already started in the past — just resume the live ticker
-  if (rec.tradeStartedAt) {
-    settleTradeGrowth(); // catch up any offline time first
-    if (!tradeGrowthId) tradeGrowthId = setInterval(applyTradeGrowthTick, TRADE_TICK_MS);
-    const st = $('#balance-status');
-    if (st) st.textContent = 'Trading · +15% daily';
-    return;
+  const isNew = !rec.tradeStartedAt;
+  if (isNew) {
+    rec.tradeStartedAt = Date.now();
+    rec.tradeLastAccruedAt = rec.tradeStartedAt;
+    saveRecord();
   }
-  // First time: mark the permanent start
-  const now = Date.now();
-  rec.tradeStartedAt = now;
-  rec.tradeLastAccruedAt = now;
-  saveRecord();
   if (!tradeGrowthId) tradeGrowthId = setInterval(applyTradeGrowthTick, TRADE_TICK_MS);
   const st = $('#balance-status');
-  if (st) st.textContent = 'Trading · +15% daily';
-  if (!quiet) {
-    pushActivity('trade', 'Trade started', 'Balance growing at 15% per day — continues even offline');
-    toast('success', 'Trade started', 'Your deposit will grow at 15% daily, even if you log out or go offline.');
+  if (st) st.textContent = 'Automation enabled';
+  if (isNew && !quiet) {
+    pushActivity('trade', 'Automation enabled', 'Status saved. Connect a server-side trading service for unattended order execution.');
+    toast('info', 'Automation status saved', 'This page remembers the setting; it does not place trades while your device is offline.');
   }
 }
 
-/** Pause the live ticker only (does NOT stop permanent growth). */
+/** Pause the browser status ticker; the saved enabled flag remains intact. */
 function pauseTradeTicker() {
   if (tradeGrowthId) {
     clearInterval(tradeGrowthId);
     tradeGrowthId = null;
   }
-  // Accrue one last time so offline period starts from a clean timestamp
-  if (rec && rec.tradeStartedAt) settleTradeGrowth();
+  // Keep the saved enabled flag; actual order execution must run server-side.
 }
 
 function closeInlineTrade() {
@@ -2388,7 +2352,7 @@ function openTrade() {
     buildTradeReel();
     feedStatusTick();
     refreshTradeReadout();
-    // Permanently starts (or resumes) 15% daily growth
+    // Saves or resumes the automation-enabled status
     startTradeGrowth(false);
     panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   } else {
@@ -2716,14 +2680,10 @@ function wire() {
   // live market loop
   setInterval(tick, 1400);
   window.addEventListener('resize', drawEquityChart);
-  // When user returns after being away (tab hidden / device sleep), settle offline growth
+  // Restore the saved automation indicator when the user returns to the tab.
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && session && rec && rec.tradeStartedAt) {
-      const gain = settleTradeGrowth();
-      if (gain > 0) {
-        renderAll();
-        toast('success', 'Growth while away', fmtUsd(gain) + ' earned at 15% daily.');
-      }
+      applyTradeGrowthTick();
     }
   });
   seedEquity();
@@ -2764,13 +2724,13 @@ function tryLocalBoot() {
     const u = store.get(KEYS.users, {})[saved.email];
     session = { email: saved.email, name: u.name };
     rec = store.get(recKey(saved.email), { balance: 0, deposited: 0, activities: [], holdings: {} });
-    // Catch up offline growth from previous sessions
+    // Restore saved automation status from previous sessions
     if (rec.tradeStartedAt) {
       const gain = settleTradeGrowth();
       startTradeGrowth(true);
       if (gain > 0) {
-        pushActivity('trade', 'Offline growth credited', 'Balance compounded while you were away', gain);
-        toast('success', 'Growth while offline', fmtUsd(gain) + ' earned at 15% daily while you were away.');
+        pushActivity('trade', 'Automation resumed', 'Your saved automation setting was restored', gain);
+        toast('success', 'Automation resumed', 'Your saved automation setting is active again.');
       }
     }
     $('#screen-landing').classList.add('hidden');
