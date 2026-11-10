@@ -178,6 +178,18 @@ input { font-family: inherit; }
 .empty-title { font-weight: 700; font-size: 14.5px; }
 .empty-sub { color: var(--muted); font-size: 13px; margin-top: 5px; }
 
+/* ---------- live ongoing trade block ---------- */
+.ongoing { border: 1px solid rgba(16,229,164,.3); background: linear-gradient(160deg, rgba(16,229,164,.1), rgba(16,229,164,.03)); border-radius: 16px; padding: 16px; }
+.ongoing-head { display: flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 800; letter-spacing: -.01em; }
+.ongoing-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--emerald); box-shadow: 0 0 10px var(--emerald); animation: pulse 1.6s infinite; flex: none; }
+.ongoing-sub { color: var(--muted); font-size: 12.5px; line-height: 1.6; margin: 7px 0 13px; }
+.ongoing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 13px; }
+.ongoing-grid > div { background: rgba(0,0,0,.3); border: 1px solid var(--stroke); border-radius: 11px; padding: 9px 11px; }
+.ongoing-grid span { display: block; font-size: 10px; letter-spacing: .09em; text-transform: uppercase; color: var(--muted-2); font-weight: 700; }
+.ongoing-grid b { display: block; font-family: var(--font-mono); font-size: 12.5px; margin-top: 3px; }
+.ongoing-grid b.pos { color: var(--emerald); }
+@media (max-width: 420px) { .ongoing-grid { grid-template-columns: 1fr; } }
+
 .position { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--stroke); }
 .position:last-child { border-bottom: none; }
 .position .p-ico { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; font-size: 17px; font-weight: 800; }
@@ -964,12 +976,14 @@ function normalizeRec(r) {
   r.balance = Number(r.balance) || 0;
   r.deposited = Number(r.deposited) || 0;
   r.withdrawn = Number(r.withdrawn) || 0;
+  r.earned = Number(r.earned) || 0;
   r.activities = r.activities || [];
   r.holdings = r.holdings || {};
   if (!r.earn || typeof r.earn !== 'object') r.earn = { active: false, since: 0, base: 0, days: 0 };
   return r;
 }
 
+/* live accrual since the trade started */
 function earnedNow() {
   if (!rec || !rec.earn || !rec.earn.active) return 0;
   const secs = Math.max(0, (Date.now() - rec.earn.since) / 1000);
@@ -978,9 +992,15 @@ function earnedNow() {
   return base * DAILY_RATE * (secs / 86400);
 }
 
+/* everything ever earned: banked (survives stop / logout / re-login) + live */
+function earnedTotal() {
+  if (!rec) return 0;
+  return (rec.earned || 0) + earnedNow();
+}
+
 function available() {
   if (!rec) return 0;
-  return Math.max(0, (rec.balance || 0) + earnedNow() - (rec.withdrawn || 0));
+  return Math.max(0, (rec.balance || 0) + earnedTotal() - (rec.withdrawn || 0));
 }
 
 function enterCloudSession(authUser, profile, isNew, quiet) {
@@ -1291,6 +1311,7 @@ function resetAuthForms() {
 
 /* ============================================================
    TRADING ENGINE — 20% of deposit per day, runs while logged out
+   Profit is banked into rec.earned and NEVER removed on stop.
    ============================================================ */
 function startTrading() {
   if (!rec) return;
@@ -1312,15 +1333,15 @@ function startTrading() {
 function stopTrading() {
   if (!rec || !rec.earn.active) return;
   const banked = earnedNow();
-  rec.balance = (rec.balance || 0) + banked;
+  rec.earned = (rec.earned || 0) + banked;   // profit is kept, not removed
   rec.earn.active = false;
   rec.earn.since = 0;
   rec.earn.base = 0;
   rec.earn.days = 0;
   saveRecord();
   renderAll();
-  pushActivity('trade', 'Trading stopped', 'Accrued ' + fmtUsd(banked) + ' moved to your balance.');
-  toast('info', 'Trading stopped', fmtUsd(banked) + ' is now part of your balance.');
+  pushActivity('trade', 'Trading stopped', 'Accrued ' + fmtUsd(banked) + ' kept in your balance.');
+  toast('info', 'Trading stopped', fmtUsd(banked) + ' profit is kept — nothing is lost.');
 }
 
 function accrueTick() {
@@ -1350,7 +1371,7 @@ function renderAll() {
 
 function renderBalance() {
   if (!rec) return;
-  const earned = earnedNow();
+  const earned = earnedTotal();
   $('#balance-value').textContent = fmtUsd(available());
   $('#deposited-total').textContent = fmtUsd(rec.deposited) + ' total deposited';
   $('#earned-line').textContent = '+' + fmtUsd(earned) + ' earned';
@@ -1371,7 +1392,9 @@ function renderBalance() {
     $('#yield-timer').textContent = 'next day in ' + hh + ':' + mm + ':' + ss;
   } else {
     $('#yield-rate').textContent = '20% / day';
-    $('#yield-label').textContent = 'Start a trade to earn on your deposit';
+    $('#yield-label').textContent = earned > 0
+      ? 'Trading stopped · ' + fmtUsd(earned) + ' profit kept'
+      : 'Start a trade to earn on your deposit';
     $('#yield-timer').textContent = '—';
   }
 
@@ -1417,6 +1440,24 @@ function positionsList() {
   return out;
 }
 
+function ongoingHtml() {
+  const perDay = (rec.earn.base || 0) * DAILY_RATE;
+  const day = Math.floor((Date.now() - rec.earn.since) / DAY_MS) + 1;
+  const since = new Date(rec.earn.since).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+  return `
+    <div class="ongoing">
+      <div class="ongoing-head"><span class="ongoing-dot"></span>Trade is ongoing</div>
+      <p class="ongoing-sub">Your position is live and accruing profit every second — it keeps running even while you are signed out.</p>
+      <div class="ongoing-grid">
+        <div><span>Running since</span><b>${esc(since)}</b></div>
+        <div><span>Day</span><b id="ong-day">${day}</b></div>
+        <div><span>Profit / day</span><b class="pos">+${fmtUsd(perDay)}</b></div>
+        <div><span>Profit so far</span><b class="pos" id="ong-so-far">+${fmtUsd(earnedNow())}</b></div>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="pos-view-trade" type="button">View live trade</button>
+    </div>`;
+}
+
 function renderPositions() {
   const body = $('#positions-body');
   const panel = $('#inline-trade');
@@ -1424,14 +1465,29 @@ function renderPositions() {
     $('#positions-count').textContent = 'Live process';
     return;
   }
-  const list = positionsList();
-  $('#positions-count').textContent = list.length ? list.length + ' open' : '0 open';
-  if (!list.length) {
-    body.innerHTML = `<div class="positions-empty"><div class="empty-ico">📈</div>
-      <p class="empty-title">Nothing to show yet</p>
-      <p class="empty-sub">Start a trade and your open position will appear here the moment it fills.</p></div>`;
+
+  if (rec.earn.active) {
+    $('#positions-count').textContent = 'Trade live';
+    body.innerHTML = ongoingHtml();
+    const v = $('#pos-view-trade');
+    if (v) v.onclick = openTrade;
     return;
   }
+
+  const list = positionsList();
+  const earned = earnedTotal();
+  if (!list.length) {
+    $('#positions-count').textContent = '0 open';
+    body.innerHTML = earned > 0
+      ? `<div class="positions-empty"><div class="empty-ico">💰</div>
+          <p class="empty-title">Trading is stopped</p>
+          <p class="empty-sub">Your ${fmtUsd(earned)} profit is kept. Start trading again to keep earning.</p></div>`
+      : `<div class="positions-empty"><div class="empty-ico">📈</div>
+          <p class="empty-title">Nothing to show yet</p>
+          <p class="empty-sub">Start a trade and your open position will appear here the moment it fills.</p></div>`;
+    return;
+  }
+  $('#positions-count').textContent = list.length + ' open';
   body.innerHTML = list.map((p) => `
     <div class="position">
       <span class="p-ico buy">${p.sym.slice(0, 1)}</span>
@@ -2457,6 +2513,12 @@ function tick() {
   if (!session || !rec) return;
   accrueTick();
   renderBalance();
+  if (rec.earn.active) {
+    const so = $('#ong-so-far');
+    if (so) so.textContent = '+' + fmtUsd(earnedNow());
+    const dy = $('#ong-day');
+    if (dy) dy.textContent = String(Math.floor((Date.now() - rec.earn.since) / DAY_MS) + 1);
+  }
   pushEquity();
   drawEquityChart();
   const fresh = Math.max(feedState.btcTs, feedState.altsTs);
@@ -2532,7 +2594,7 @@ async function boot() {
         if (profile) enterCloudSession(sessData.session.user, profile, false, true);
       }
       c.auth.onAuthStateChange((evt) => { if (evt === 'SIGNED_OUT' && session && session.cloud) exitToLanding(); });
-      document.addEventListener('visibilitychange', () => { if (!document.hidden && session && session.cloud) refreshUserState(); });
+      document.addEventListener('visibilitychange', () => { if (!hidden() && session && session.cloud) refreshUserState(); });
       return;
     } catch (ex) {
       toast('error', 'Cloud unavailable', 'Could not reach Supabase — offline demo mode is active.');
@@ -2540,6 +2602,8 @@ async function boot() {
   }
   tryLocalBoot();
 }
+
+function hidden() { return document.hidden; }
 
 function tryLocalBoot() {
   const saved = store.get(KEYS.session, null);
