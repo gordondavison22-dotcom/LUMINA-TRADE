@@ -6,9 +6,6 @@
 <title>LuminaTrade — Trading Dashboard</title>
 <meta name="description" content="A modern crypto trading platform built for everyone.">
 <style>
-/* ============================================================
-   LuminaTrade — Demo trading dashboard  ·  premium dark theme
-   ============================================================ */
 :root {
   --bg: #04060d;
   --bg-soft: #080c17;
@@ -38,30 +35,18 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 html, body { height: 100%; }
-
-body {
-  font-family: var(--font-body);
-  background: var(--bg);
-  color: var(--text);
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 button { font-family: inherit; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 input { font-family: inherit; }
 .hidden { display: none !important; }
-
 ::selection { background: rgba(16, 229, 164, 0.3); }
 
-/* Scrollbars */
 ::-webkit-scrollbar { width: 9px; height: 9px; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.22); }
 ::-webkit-scrollbar-track { background: transparent; }
 
-/* ============ Ambient background ============ */
 .bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
 .bg-grid {
   position: absolute; inset: -2px;
@@ -80,7 +65,6 @@ input { font-family: inherit; }
 @keyframes drift2 { to { transform: translate(-70px, 80px) scale(1.08); } }
 .bg-vignette { position: absolute; inset: 0; background: radial-gradient(ellipse 120% 90% at 50% 20%, transparent 55%, rgba(0,0,0,.55)); }
 
-/* ============ Shared ============ */
 .glass {
   background: linear-gradient(160deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
   border: 1px solid var(--stroke);
@@ -90,11 +74,7 @@ input { font-family: inherit; }
   box-shadow: var(--shadow-lg);
 }
 
-.pill {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 10.5px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase;
-  padding: 4px 9px; border-radius: 99px;
-}
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; padding: 4px 9px; border-radius: 99px; }
 .pill-demo { background: rgba(16,229,164,.12); color: var(--emerald); border: 1px solid rgba(16,229,164,.28); }
 .pill-ghost { background: rgba(255,255,255,.05); color: var(--muted); border: 1px solid var(--stroke); }
 .pill-sm { font-size: 9.5px; padding: 3px 8px; }
@@ -106,38 +86,20 @@ input { font-family: inherit; }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
 .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--emerald); display: inline-block; box-shadow: 0 0 12px var(--emerald); animation: pulse 1.6s infinite; }
 
-.grad-text {
-  background: var(--grad-main);
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent; color: transparent;
-}
+.grad-text { background: var(--grad-main); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
 
 .screen { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
 
-/* ============ Buttons ============ */
-.btn {
-  border: none; border-radius: var(--r-sm);
-  font-weight: 600; font-size: 14px; color: var(--text);
-  padding: 10px 18px; transition: transform .16s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
-}
+.btn { border: none; border-radius: var(--r-sm); font-weight: 600; font-size: 14px; color: var(--text); padding: 10px 18px; transition: transform .16s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease; }
 .btn:active { transform: translateY(1px) scale(.99); }
 .btn-ghost { background: rgba(255,255,255,.05); border: 1px solid var(--stroke); }
 .btn-ghost:hover { background: rgba(255,255,255,.1); border-color: var(--stroke-hi); }
-.btn-primary {
-  background: linear-gradient(120deg, #10e5a4, #06c98f);
-  color: #03241a; box-shadow: 0 10px 26px -10px rgba(16,229,164,.55);
-}
+.btn-primary { background: linear-gradient(120deg, #10e5a4, #06c98f); color: #03241a; box-shadow: 0 10px 26px -10px rgba(16,229,164,.55); }
 .btn-primary:hover { box-shadow: 0 14px 32px -10px rgba(16,229,164,.7); transform: translateY(-1px); }
 .btn-block { width: 100%; padding: 13px; font-size: 15px; }
 .btn-link-ghost { background: transparent; color: var(--muted); border: 1px dashed var(--stroke); }
 
-/* action buttons on balance card */
-.btn-action {
-  display: flex; align-items: center; justify-content: center; gap: 9px;
-  flex: 1; padding: 15px 10px; font-size: 15px; font-weight: 700;
-  border-radius: 14px; border: 1px solid var(--stroke); background: rgba(255,255,255,.05);
-  transition: transform .16s, box-shadow .22s, border-color .2s, background .2s;
-}
+.btn-action { display: flex; align-items: center; justify-content: center; gap: 9px; flex: 1; padding: 15px 10px; font-size: 15px; font-weight: 700; border-radius: 14px; border: 1px solid var(--stroke); background: rgba(255,255,255,.05); transition: transform .16s, box-shadow .22s, border-color .2s, background .2s; }
 .btn-action:hover { transform: translateY(-2px); }
 .btn-action .act-ico { font-size: 16px; font-weight: 800; line-height: 1; }
 .btn-deposit { background: linear-gradient(120deg, rgba(16,229,164,.2), rgba(16,229,164,.07)); border-color: rgba(16,229,164,.35); }
@@ -148,38 +110,21 @@ input { font-family: inherit; }
 .btn-trade { background: linear-gradient(120deg, rgba(139,92,246,.2), rgba(56,189,248,.08)); border-color: rgba(139,92,246,.4); }
 .btn-trade:hover { box-shadow: 0 14px 30px -12px rgba(139,92,246,.55); border-color: rgba(139,92,246,.7); }
 .btn-trade .act-ico { color: var(--violet); }
+.btn-trade.is-trading { background: linear-gradient(120deg, rgba(16,229,164,.26), rgba(139,92,246,.1)); border-color: rgba(16,229,164,.6); box-shadow: 0 0 0 3px rgba(16,229,164,.14); }
+.btn-trade.is-trading .act-ico { color: var(--emerald); animation: pulse 1.6s infinite; }
 
 .link-btn { background: none; border: none; color: var(--muted); font-size: 12.5px; font-weight: 600; }
 .link-btn:hover { color: var(--emerald); }
 
-/* ============ Topbar ============ */
-.topbar {
-  position: relative; z-index: 5;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 20px clamp(18px, 4vw, 52px);
-}
+.topbar { position: relative; z-index: 5; display: flex; align-items: center; justify-content: space-between; padding: 20px clamp(18px, 4vw, 52px); }
 .brand { display: flex; align-items: center; gap: 10px; }
-.brand-mark {
-  width: 38px; height: 38px; display: grid; place-items: center;
-  border-radius: 12px; font-size: 16px; color: #04231a;
-  background: var(--grad-main); box-shadow: 0 8px 22px -6px rgba(16,229,164,.65);
-}
+.brand-mark { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; font-size: 16px; color: #04231a; background: var(--grad-main); box-shadow: 0 8px 22px -6px rgba(16,229,164,.65); }
 .brand-name { font-family: var(--font-display); font-weight: 700; font-size: 20px; letter-spacing: -.02em; }
 .brand-name span { color: var(--emerald); }
 .topbar-nav { display: flex; gap: 10px; }
 
-/* ============ Landing ============ */
-.landing {
-  flex: 1; width: min(1180px, 92%); margin: 0 auto;
-  display: grid; grid-template-columns: 1.15fr .85fr; gap: 56px;
-  align-items: center; padding: 44px 0 40px;
-}
-.hero-eyebrow {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 12.5px; font-weight: 600; letter-spacing: .04em; color: var(--muted);
-  background: rgba(255,255,255,.05); border: 1px solid var(--stroke);
-  padding: 8px 14px; border-radius: 99px; margin-bottom: 22px;
-}
+.landing { flex: 1; width: min(1180px, 92%); margin: 0 auto; display: grid; grid-template-columns: 1.15fr .85fr; gap: 56px; align-items: center; padding: 44px 0 40px; }
+.hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; letter-spacing: .04em; color: var(--muted); background: rgba(255,255,255,.05); border: 1px solid var(--stroke); padding: 8px 14px; border-radius: 99px; margin-bottom: 22px; }
 .hero-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(34px, 4.6vw, 58px); line-height: 1.08; letter-spacing: -.03em; }
 .hero-sub { margin-top: 20px; color: var(--muted); font-size: clamp(14.5px, 1.35vw, 17px); line-height: 1.7; max-width: 46ch; }
 .hero-stats { display: flex; gap: clamp(22px, 3.5vw, 46px); margin-top: 38px; }
@@ -187,17 +132,13 @@ input { font-family: inherit; }
 .hero-stat span { color: var(--muted-2); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; font-weight: 600; }
 .hero-stat b { background: var(--grad-main); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 
-/* Auth card */
 .auth-card { padding: 30px; width: min(430px, 100%); justify-self: end; animation: rise .6s ease both; }
 .auth-tabs { display: flex; gap: 6px; background: rgba(0,0,0,.32); padding: 5px; border-radius: 12px; margin-bottom: 24px; }
 .auth-tab { flex: 1; background: transparent; border: none; color: var(--muted); font-weight: 600; font-size: 13.5px; padding: 10px; border-radius: 9px; transition: .2s; }
 .auth-tab.active { background: rgba(255,255,255,.09); color: var(--text); box-shadow: 0 4px 14px -4px rgba(0,0,0,.4); }
 .field { display: block; margin-bottom: 15px; }
 .field > span { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 7px; letter-spacing: .02em; }
-.field input {
-  width: 100%; background: rgba(0,0,0,.32); border: 1px solid var(--stroke); border-radius: 11px;
-  color: var(--text); padding: 12.5px 14px; font-size: 14.5px; outline: none; transition: border .2s, box-shadow .2s, background .2s;
-}
+.field input { width: 100%; background: rgba(0,0,0,.32); border: 1px solid var(--stroke); border-radius: 11px; color: var(--text); padding: 12.5px 14px; font-size: 14.5px; outline: none; transition: border .2s, box-shadow .2s, background .2s; }
 .field input::placeholder { color: var(--muted-2); }
 .field input:focus { border-color: rgba(16,229,164,.55); box-shadow: 0 0 0 4px rgba(16,229,164,.12); background: rgba(0,0,0,.45); }
 .auth-foot { margin-top: 18px; text-align: center; color: var(--muted-2); font-size: 12px; line-height: 1.6; }
@@ -205,7 +146,6 @@ input { font-family: inherit; }
 .form-error { color: var(--rose); font-size: 13px; margin-top: 11px; min-height: 0; font-weight: 500; }
 .landing-foot { text-align: center; color: var(--muted-2); font-size: 12.5px; padding: 22px; }
 
-/* ============ Dashboard ============ */
 .dash { flex: 1; width: min(1240px, 93%); margin: 0 auto; padding: 6px 0 48px; }
 .dash-greeting { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin: 14px 0 26px; }
 .greet-title { font-family: var(--font-display); font-size: clamp(21px, 2.2vw, 27px); font-weight: 800; letter-spacing: -.02em; }
@@ -222,23 +162,16 @@ input { font-family: inherit; }
 .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .card-label { font-size: 12px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--muted); display: inline-flex; align-items: center; gap: 9px; }
 
-/* Balance card */
 .balance-card { position: relative; overflow: hidden; padding: 30px 30px 24px; }
 .balance-top { display: flex; align-items: center; justify-content: space-between; }
 .bal-usd-flag { font-size: 10.5px; font-weight: 800; color: var(--muted-2); letter-spacing: .15em; border: 1px solid var(--stroke); padding: 3px 8px; border-radius: 7px; }
-.balance-value {
-  font-family: var(--font-mono); font-weight: 700; font-size: clamp(40px, 5.4vw, 62px);
-  letter-spacing: -.03em; line-height: 1.15; margin-top: 14px;
-  background: linear-gradient(180deg, #ffffff, #aab4d4);
-  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-}
+.balance-value { font-family: var(--font-mono); font-weight: 700; font-size: clamp(40px, 5.4vw, 62px); letter-spacing: -.03em; line-height: 1.15; margin-top: 14px; white-space: nowrap; overflow: hidden; background: linear-gradient(180deg, #ffffff, #aab4d4); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .balance-sub { color: var(--muted); font-size: 13px; margin-top: 6px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .balance-sub .pos { color: var(--emerald); font-weight: 600; }
 .dot-sep { color: var(--muted-2); }
 .balance-chart { width: 100%; height: 150px; display: block; margin: 18px 0 20px; }
 .action-row { display: flex; gap: 12px; flex-wrap: wrap; }
 
-/* empty / lists */
 .positions-empty { display: flex; flex-direction: column; align-items: center; padding: 26px 10px 30px; text-align: center; }
 .positions-empty .empty-ico { font-size: 30px; margin-bottom: 12px; opacity: .8; }
 .empty-title { font-weight: 700; font-size: 14.5px; }
@@ -273,7 +206,6 @@ input { font-family: inherit; }
 .act-amt.neg { color: var(--rose); }
 .activity-empty { color: var(--muted-2) !important; font-size: 13px !important; justify-content: center; padding: 18px 0 !important; }
 
-/* markets */
 .mkt-item { display: flex; align-items: center; gap: 11px; padding: 11px 2px; border-bottom: 1px solid rgba(255,255,255,.05); }
 .mkt-item:last-child { border-bottom: none; }
 .mkt-ico { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 14px; }
@@ -283,6 +215,7 @@ input { font-family: inherit; }
 .ico-bnb { background: linear-gradient(140deg, rgba(245,176,65,.95), rgba(202,138,4,.75)); }
 .ico-xrp { background: linear-gradient(140deg, rgba(37,99,235,.9), rgba(29,78,216,.75)); }
 .ico-dot { background: linear-gradient(140deg, rgba(232,62,140,.9), rgba(190,24,93,.75)); }
+.ico-usdt { background: linear-gradient(140deg, rgba(38,161,123,.95), rgba(20,110,84,.85)); }
 .mkt-name b { display: block; font-size: 13.5px; }
 .mkt-name span { font-size: 11.5px; color: var(--muted-2); font-family: var(--font-mono); }
 .mkt-spark { margin-left: auto; }
@@ -301,27 +234,12 @@ input { font-family: inherit; }
 
 .dash-foot { text-align: center; color: var(--muted-2); font-size: 12px; padding: 26px; }
 
-/* ============ Modals ============ */
-.modal-layer {
-  position: fixed; inset: 0; z-index: 40; background: rgba(2,4,10,.62);
-  backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
-  animation: fade .22s ease;
-}
-.modal {
-  position: fixed; inset: 0; z-index: 50; display: grid; place-items: center;
-  padding: 20px; overflow-y: auto; animation: rise .28s cubic-bezier(.2,.9,.3,1.2) both;
-}
+.modal-layer { position: fixed; inset: 0; z-index: 40; background: rgba(2,4,10,.62); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px); animation: fade .22s ease; }
+.modal { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 20px; overflow-y: auto; animation: rise .28s cubic-bezier(.2,.9,.3,1.2) both; }
 .modal-card { position: relative; width: min(460px, 100%); padding: 30px; animation: pop .3s cubic-bezier(.18,.9,.3,1.25) both; }
-.modal-x {
-  position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 10px;
-  border: 1px solid var(--stroke); background: rgba(255,255,255,.05); color: var(--muted);
-  font-size: 13px; transition: .2s;
-}
+.modal-x { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 10px; border: 1px solid var(--stroke); background: rgba(255,255,255,.05); color: var(--muted); font-size: 13px; transition: .2s; }
 .modal-x:hover { color: var(--text); background: rgba(255,255,255,.12); }
-.modal-ico {
-  width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center;
-  font-size: 19px; font-weight: 800; margin-bottom: 16px;
-}
+.modal-ico { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; font-size: 19px; font-weight: 800; margin-bottom: 16px; }
 .ico-emerald { background: rgba(16,229,164,.14); color: var(--emerald); box-shadow: 0 0 0 1px rgba(16,229,164,.25) inset; }
 .ico-amber { background: rgba(245,181,68,.14); color: var(--amber); box-shadow: 0 0 0 1px rgba(245,181,68,.25) inset; }
 .ico-violet { background: rgba(139,92,246,.15); color: var(--violet); box-shadow: 0 0 0 1px rgba(139,92,246,.28) inset; }
@@ -349,22 +267,13 @@ input { font-family: inherit; }
 .dest-name { font-size: 13.5px; font-weight: 700; }
 .dest-sub { font-size: 11px; color: var(--muted-2); }
 
-.denied {
-  display: flex; gap: 12px; align-items: flex-start;
-  background: rgba(251,93,111,.09); border: 1px solid rgba(251,93,111,.3);
-  border-radius: 13px; padding: 14px 15px; margin-top: 15px; animation: pop .3s ease;
-}
+.denied { display: flex; gap: 12px; align-items: flex-start; background: rgba(251,93,111,.09); border: 1px solid rgba(251,93,111,.3); border-radius: 13px; padding: 14px 15px; margin-top: 15px; animation: pop .3s ease; }
 .denied-ico { font-size: 18px; }
 .denied p { color: var(--rose); font-size: 13px; line-height: 1.55; }
 .denied b { font-weight: 700; }
 
-/* process overlay */
 .center-modal { text-align: center; }
-.spinner {
-  width: 52px; height: 52px; margin: 4px auto 18px; border-radius: 50%;
-  border: 3px solid rgba(16,229,164,.15); border-top-color: var(--emerald);
-  animation: spin 1s linear infinite;
-}
+.spinner { width: 52px; height: 52px; margin: 4px auto 18px; border-radius: 50%; border: 3px solid rgba(16,229,164,.15); border-top-color: var(--emerald); animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .proc-steps { margin: 22px auto 0; width: min(300px, 100%); text-align: left; display: flex; flex-direction: column; gap: 12px; }
 .proc-step { position: relative; padding-left: 34px; color: var(--muted-2); font-size: 13px; font-weight: 600; transition: .3s; }
@@ -386,14 +295,8 @@ input { font-family: inherit; }
 .trade-chart-box { border: 1px solid var(--stroke); border-radius: 16px; padding: 14px 14px 10px; background: linear-gradient(180deg, rgba(139,92,246,.06), rgba(255,255,255,.015)); }
 #trade-chart { display: block; width: 100%; height: 170px; }
 
-/* toasts */
 .toast-wrap { position: fixed; bottom: 24px; right: 24px; z-index: 90; display: flex; flex-direction: column; gap: 10px; max-width: 360px; }
-.toast {
-  display: flex; gap: 11px; align-items: flex-start;
-  background: rgba(10,14,26,.92); border: 1px solid var(--stroke-hi);
-  border-radius: 14px; padding: 13px 15px; box-shadow: var(--shadow-lg);
-  backdrop-filter: blur(12px); font-size: 13.5px; line-height: 1.5; animation: slideIn .3s cubic-bezier(.2,.9,.3,1.2);
-}
+.toast { display: flex; gap: 11px; align-items: flex-start; background: rgba(10,14,26,.92); border: 1px solid var(--stroke-hi); border-radius: 14px; padding: 13px 15px; box-shadow: var(--shadow-lg); backdrop-filter: blur(12px); font-size: 13.5px; line-height: 1.5; animation: slideIn .3s cubic-bezier(.2,.9,.3,1.2); }
 .toast.success { border-color: rgba(16,229,164,.4); }
 .toast.success .t-ico { color: var(--emerald); }
 .toast.error { border-color: rgba(251,93,111,.4); }
@@ -405,14 +308,12 @@ input { font-family: inherit; }
 .t-body b { display: block; font-size: 13px; }
 .t-body span { color: var(--muted); font-size: 12.5px; }
 
-/* animations */
 @keyframes fade { from { opacity: 0; } }
 @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
 @keyframes pop { from { opacity: 0; transform: scale(.94) translateY(8px); } }
 @keyframes slideIn { from { opacity: 0; transform: translateX(30px); } }
 @keyframes slideOut { to { opacity: 0; transform: translateX(30px); } }
 
-/* ============ Responsive ============ */
 @media (max-width: 1020px) {
   .landing { grid-template-columns: 1fr; gap: 40px; }
   .auth-card { justify-self: center; width: min(460px, 100%); }
@@ -449,7 +350,6 @@ input { font-family: inherit; }
   .trade-foot-note { font-size: 10.5px; }
 }
 
-/* ---------- deposit crypto picker + address + timer ---------- */
 .coin-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
 .coin-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 13px 6px; border-radius: 13px; border: 1px solid var(--stroke); background: rgba(255,255,255,.04); color: var(--text); cursor: pointer; transition: .18s; }
 .coin-btn:hover { border-color: var(--stroke-hi); transform: translateY(-1px); }
@@ -473,7 +373,6 @@ input { font-family: inherit; }
 .timer-bar { flex: 1 0 100%; height: 4px; border-radius: 4px; background: rgba(255,255,255,.06); overflow: hidden; margin-top: 4px; }
 .timer-bar i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--emerald), var(--amber)); transition: width 1s linear; }
 
-/* ---------- deposit confirmation (show confirmed before crediting) ---------- */
 .dep-result { text-align: center; padding: 16px 6px 8px; }
 .dep-result-ico { width: 56px; height: 56px; margin: 0 auto 14px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.05); border: 1px solid var(--stroke); }
 .dep-result-ico .spinner { width: 26px; height: 26px; }
@@ -485,7 +384,6 @@ input { font-family: inherit; }
 .dep-result.is-pending .dep-result-ico { border-color: var(--amber); }
 .dep-result.is-pending .dep-result-title { color: var(--amber); }
 
-/* ---------- admin console ---------- */
 .admin-link { background: none; border: none; color: var(--muted-2); font-size: 12px; padding: 0 4px; cursor: pointer; text-decoration: underline dotted; }
 .admin-link:hover { color: var(--text); }
 .admin-badge { font-size: 11px; font-weight: 800; letter-spacing: .04em; color: var(--violet); border: 1px solid rgba(139,92,246,.35); background: rgba(139,92,246,.12); padding: 4px 10px; border-radius: 20px; margin-left: 10px; }
@@ -522,95 +420,31 @@ input { font-family: inherit; }
 @media (max-width: 820px) { .admin-grid, .admin-stats { grid-template-columns: 1fr; } }
 
 .admin-link { text-decoration: none; letter-spacing: 2px; font-weight: 800; }
-/* ---------- real market feed status (round 5) ---------- */
-.feed-dot {
-  display: inline-block;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  margin: 0 7px 2px 10px;
-  vertical-align: middle;
-  background: var(--muted-2);
-  transition: background .3s ease;
-  flex: none;
-}
-.feed-dot.live {
-  background: var(--emerald);
-  box-shadow: 0 0 0 0 rgba(16, 229, 164, 0.45);
-  animation: feedPulse 1.8s ease-out infinite;
-}
-.feed-dot.stale {
-  background: var(--rose);
-}
-#feed-src {
-  color: var(--muted);
-}
+.feed-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin: 0 7px 2px 10px; vertical-align: middle; background: var(--muted-2); transition: background .3s ease; flex: none; }
+.feed-dot.live { background: var(--emerald); box-shadow: 0 0 0 0 rgba(16, 229, 164, 0.45); animation: feedPulse 1.8s ease-out infinite; }
+.feed-dot.stale { background: var(--rose); }
+#feed-src { color: var(--muted); }
 .mkt-price .dim { opacity: .5; }
 @keyframes feedPulse {
   0%   { box-shadow: 0 0 0 0 rgba(16, 229, 164, 0.45); }
   70%  { box-shadow: 0 0 0 8px rgba(16, 229, 164, 0); }
   100% { box-shadow: 0 0 0 0 rgba(16, 229, 164, 0); }
 }
-/* trade reel - live crypto cluster marquee */
-.trade-reel {
-  position: relative;
-  overflow: hidden;
-  margin: 0 0 16px;
-  padding: 9px 0;
-  border: 1px solid var(--stroke);
-  border-radius: 14px;
-  background: linear-gradient(180deg, rgba(139,92,246,.05), rgba(255,255,255,.015));
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-}
-.trade-reel-track {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: max-content;
-  animation: reelX 46s linear infinite;
-  will-change: transform;
-}
-.trade-reel:hover .trade-reel-track,
-.trade-reel:focus-within .trade-reel-track { animation-play-state: paused; }
-.reel-chip {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 6px 12px 6px 7px;
-  border: 1px solid rgba(255,255,255,.06);
-  border-radius: 999px;
-  background: rgba(255,255,255,.03);
-  white-space: nowrap;
-  user-select: none;
-}
-.reel-ico {
-  width: 26px; height: 26px;
-  border-radius: 50%;
-  display: grid; place-items: center;
-  font-weight: 800; font-size: 10.5px;
-  flex: none;
-  box-shadow: 0 0 0 1px rgba(255,255,255,.08);
-}
+.trade-reel { position: relative; overflow: hidden; margin: 0 0 16px; padding: 9px 0; border: 1px solid var(--stroke); border-radius: 14px; background: linear-gradient(180deg, rgba(139,92,246,.05), rgba(255,255,255,.015)); -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.trade-reel-track { display: flex; align-items: center; gap: 10px; width: max-content; animation: reelX 46s linear infinite; will-change: transform; }
+.trade-reel:hover .trade-reel-track, .trade-reel:focus-within .trade-reel-track { animation-play-state: paused; }
+.reel-chip { display: flex; align-items: center; gap: 9px; padding: 6px 12px 6px 7px; border: 1px solid rgba(255,255,255,.06); border-radius: 999px; background: rgba(255,255,255,.03); white-space: nowrap; user-select: none; }
+.reel-ico { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 10.5px; flex: none; box-shadow: 0 0 0 1px rgba(255,255,255,.08); }
 .reel-id b { display: block; font-size: 12px; line-height: 1.2; letter-spacing: .01em; }
 .reel-id span { display: block; font-size: 9.5px; line-height: 1.15; color: var(--muted-2); font-family: var(--font-mono); letter-spacing: .04em; }
 .reel-px { font-family: var(--font-mono); font-size: 12px; font-weight: 700; margin-left: 3px; }
-.reel-chg {
-  font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
-  padding: 2.5px 8px; border-radius: 999px; line-height: 1.3;
-}
+.reel-chg { font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; padding: 2.5px 8px; border-radius: 999px; line-height: 1.3; }
 .reel-chg.up { color: var(--emerald); background: rgba(16,229,164,.12); }
 .reel-chg.down { color: var(--rose); background: rgba(251,93,111,.12); }
 .reel-chg.dim { color: var(--muted-2); background: rgba(255,255,255,.05); }
-@keyframes reelX {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .trade-reel-track { animation-duration: 120s; }
-}
+@keyframes reelX { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .trade-reel-track { animation-duration: 120s; } }
 
-/* ---------- round 7: inline trade console inside the Positions card ---------- */
 #inline-trade { animation: rise .22s ease both; }
 #inline-trade .trade-head { margin-bottom: 14px; }
 #inline-trade .modal-ico { width: 40px; height: 40px; font-size: 17px; }
@@ -622,11 +456,20 @@ input { font-family: inherit; }
 .inline-trade-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
 .trade-foot-note { color: var(--muted-2); font-size: 11.5px; }
 .btn-trade.is-open { box-shadow: 0 0 0 3px rgba(139,92,246,.25), 0 14px 30px -12px rgba(139,92,246,.55); }
+
+/* ---------- trading yield strip ---------- */
+.yield-strip { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 14px; padding: 11px 13px; border-radius: 13px; border: 1px solid rgba(16,229,164,.28); background: rgba(16,229,164,.07); }
+.yield-strip .y-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--emerald); box-shadow: 0 0 10px var(--emerald); animation: pulse 1.6s infinite; flex: none; }
+.yield-strip b { font-family: var(--font-mono); color: var(--emerald); font-size: 13.5px; }
+.yield-strip span { color: var(--muted); font-size: 12px; font-weight: 600; }
+.yield-strip .y-right { margin-left: auto; color: var(--muted-2); font-size: 11.5px; }
+.yield-strip.off { border-color: var(--stroke); background: rgba(255,255,255,.03); }
+.yield-strip.off .y-dot { background: var(--muted-2); box-shadow: none; animation: none; }
+.yield-strip.off b { color: var(--muted); }
 </style>
 </head>
 <body>
 
-<!-- ======= Ambient background ======= -->
 <div class="bg" aria-hidden="true">
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
@@ -635,13 +478,12 @@ input { font-family: inherit; }
   <div class="bg-vignette"></div>
 </div>
 
-<!-- ======= LANDING / AUTH SCREEN ======= -->
 <section id="screen-landing" class="screen">
   <header class="topbar">
     <div class="brand">
       <span class="brand-mark">◆</span>
       <span class="brand-name">Lumina<span>Trade</span></span>
-          </div>
+    </div>
     <nav class="topbar-nav">
       <button class="btn btn-ghost" data-auth="login">Sign in</button>
       <button class="btn btn-primary" data-auth="signup">Create account</button>
@@ -660,7 +502,6 @@ input { font-family: inherit; }
       </div>
     </div>
 
-    <!-- Auth card -->
     <div class="auth-card glass" id="auth-card">
       <div class="auth-tabs">
         <button class="auth-tab active" data-tab="login">Sign in</button>
@@ -704,13 +545,12 @@ input { font-family: inherit; }
   <footer class="landing-foot">LuminaTrade © 2026 · Secure crypto platform <button class="admin-link" id="admin-link-landing" aria-label="Admin console">•••</button></footer>
 </section>
 
-<!-- ======= DASHBOARD SCREEN ======= -->
 <section id="screen-dash" class="screen hidden">
   <header class="topbar">
     <div class="brand">
       <span class="brand-mark">◆</span>
       <span class="brand-name">Lumina<span>Trade</span></span>
-          </div>
+    </div>
     <div class="user-cluster">
       <div class="ticker-chip" id="net-chip">Markets <span class="ok-dot"></span> Live</div>
       <button class="btn btn-ghost" id="logout-btn">Log out</button>
@@ -727,7 +567,6 @@ input { font-family: inherit; }
     </div>
 
     <div class="dash-grid">
-      <!-- LEFT: balance + actions -->
       <div class="dash-main">
         <div class="card glass balance-card">
           <div class="balance-top">
@@ -738,7 +577,16 @@ input { font-family: inherit; }
           <div class="balance-sub">
             <span id="deposited-total">$0.00 total deposited</span>
             <span class="dot-sep">·</span>
-            <span class="pos" id="balance-status">Ready to trade</span>
+            <span class="pos" id="earned-line">+$0.00 earned</span>
+            <span class="dot-sep">·</span>
+            <span id="balance-status">Ready to trade</span>
+          </div>
+
+          <div class="yield-strip off" id="yield-strip">
+            <span class="y-dot"></span>
+            <b id="yield-rate">20% / day</b>
+            <span id="yield-label">Start a trade to earn on your deposit</span>
+            <span class="y-right" id="yield-timer">—</span>
           </div>
 
           <canvas id="balance-chart" class="balance-chart" width="900" height="180"></canvas>
@@ -756,7 +604,6 @@ input { font-family: inherit; }
           </div>
         </div>
 
-        <!-- Portfolio positions -->
         <div class="card glass">
           <div class="card-head">
             <span class="card-label">Positions</span>
@@ -770,7 +617,6 @@ input { font-family: inherit; }
             </div>
           </div>
 
-          <!-- Inline trade console: the Start-trade process runs here, in place, no popup -->
           <div id="inline-trade" class="hidden">
             <div class="trade-head">
               <div class="modal-ico ico-violet">⚡</div>
@@ -791,12 +637,12 @@ input { font-family: inherit; }
             </div>
             <div class="inline-trade-foot">
               <button class="btn btn-ghost" id="trade-close-btn" type="button">← Back to positions</button>
-              <span class="trade-foot-note">Live process — real market feed streaming</span>
+              <span class="trade-foot-note" id="trade-foot-note">Live process — real market feed streaming</span>
+              <button class="btn btn-ghost" id="trade-stop-btn" type="button">Stop trading</button>
             </div>
           </div>
         </div>
 
-        <!-- Activity -->
         <div class="card glass">
           <div class="card-head">
             <span class="card-label">Activity</span>
@@ -808,7 +654,6 @@ input { font-family: inherit; }
         </div>
       </div>
 
-      <!-- RIGHT: markets -->
       <aside class="dash-side">
         <div class="card glass">
           <div class="card-head">
@@ -817,7 +662,6 @@ input { font-family: inherit; }
           </div>
           <ul class="mkt-list" id="market-list"></ul>
         </div>
-
       </aside>
     </div>
   </main>
@@ -825,7 +669,6 @@ input { font-family: inherit; }
   <footer class="dash-foot">LuminaTrade © 2026 · Secure crypto platform <button class="admin-link" id="admin-link-dash" aria-label="Admin console">•••</button></footer>
 </section>
 
-<!-- ======= ADMIN CONSOLE (owner only) ======= -->
 <section id="screen-admin" class="screen hidden">
   <header class="topbar">
     <div class="brand">
@@ -866,10 +709,8 @@ input { font-family: inherit; }
   <footer class="dash-foot">LuminaTrade · Admin console · Owner only</footer>
 </section>
 
-<!-- ======= MODALS ======= -->
 <div id="modal-layer" class="modal-layer hidden"></div>
 
-<!-- Admin sign in -->
 <div id="admin-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Admin sign in">
   <div class="modal-card glass">
     <button class="modal-x" data-close="admin-modal">✕</button>
@@ -891,13 +732,11 @@ input { font-family: inherit; }
   </div>
 </div>
 
-<!-- Deposit modal -->
 <div id="deposit-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Deposit">
   <div class="modal-card glass">
     <button class="modal-x" data-close="deposit-modal">✕</button>
     <div class="modal-ico ico-emerald">↓</div>
     <h3 class="modal-title">Deposit funds</h3>
-    <!-- Stage 1: amount -->
     <div id="dep-stage-amount">
       <p class="modal-sub">Enter the amount to deposit, then pick a crypto network.</p>
 
@@ -907,16 +746,15 @@ input { font-family: inherit; }
         <span>Amount (USD)</span>
         <div class="input-symbol">
           <b>$</b>
-          <input type="number" id="dep-amount" min="100000" step="1000" placeholder="100,000">
+          <input type="number" id="dep-amount" min="1000" step="100" placeholder="1,000">
         </div>
       </label>
-      <p class="field-hint" id="dep-hint">Minimum deposit: <b>$100,000</b></p>
+      <p class="field-hint" id="dep-hint">Minimum deposit: <b>$1,000.00</b></p>
 
       <button class="btn btn-primary btn-block" id="dep-continue">Continue to crypto</button>
       <p class="form-error" id="dep-error"></p>
     </div>
 
-    <!-- Stage 2: pick a crypto network -->
     <div id="dep-stage-coin" class="hidden">
       <p class="modal-sub">Choose which crypto network to deposit with.</p>
 
@@ -924,9 +762,9 @@ input { font-family: inherit; }
 
       <div id="dep-addr-wrap" class="hidden">
         <div class="dep-addr-head">
-          <span class="a-ico ico-btc" id="dep-coin-ico">B</span>
-          <b id="dep-coin-name">Bitcoin</b>
-          <span class="dep-net" id="dep-coin-net">BTC</span>
+          <span class="a-ico ico-usdt" id="dep-coin-ico">U</span>
+          <b id="dep-coin-name">USDT</b>
+          <span class="dep-net" id="dep-coin-net">ERC-20</span>
         </div>
         <label class="field">
           <span>Deposit address — send the exact amount</span>
@@ -943,7 +781,7 @@ input { font-family: inherit; }
           <div class="timer-bar"><i id="dep-timer-bar"></i></div>
         </div>
 
-        <p class="field-hint" id="dep-tip">Send <b id="dep-amt-echo">$100,000.00</b> in <b id="dep-sym-echo">BTC</b> to the address above. Your balance is credited once the transfer is confirmed.</p>
+        <p class="field-hint" id="dep-tip">Send <b id="dep-amt-echo">$1,000.00</b> in <b id="dep-sym-echo">USDT</b> to the address above. Your balance is credited once the transfer is confirmed.</p>
 
         <button class="btn btn-primary btn-block" id="dep-confirm">I've sent the funds</button>
         <button class="btn btn-ghost btn-block" id="dep-back">Back to amount</button>
@@ -956,13 +794,12 @@ input { font-family: inherit; }
           <span class="dep-result-check" id="dep-result-check">✓</span>
         </div>
         <h4 class="dep-result-title" id="dep-result-title">Confirming deposit…</h4>
-        <p class="dep-result-sub" id="dep-result-sub">Waiting for the <b>BTC</b> network.</p>
+        <p class="dep-result-sub" id="dep-result-sub">Waiting for the <b>USDT</b> network.</p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Processing overlay -->
 <div id="process-modal" class="modal hidden" role="dialog" aria-label="Processing">
   <div class="modal-card glass center-modal">
     <div class="spinner" id="spinner"></div>
@@ -976,7 +813,6 @@ input { font-family: inherit; }
   </div>
 </div>
 
-<!-- Withdraw modal -->
 <div id="withdraw-modal" class="modal hidden" role="dialog" aria-label="Withdraw">
   <div class="modal-card glass">
     <button class="modal-x" data-close="withdraw-modal">✕</button>
@@ -1011,7 +847,7 @@ input { font-family: inherit; }
         <input type="number" id="withdraw-amount" min="1" step="10" placeholder="0">
       </div>
     </label>
-    <p class="field-hint">Withdrawal to any destination requires a sufficient deposited balance.</p>
+    <p class="field-hint" id="withdraw-hint">Available to withdraw: <b id="withdraw-available">$0.00</b></p>
 
     <button class="btn btn-primary btn-block" id="withdraw-confirm">Request withdrawal</button>
     <p class="form-error" id="withdraw-error"></p>
@@ -1024,15 +860,10 @@ input { font-family: inherit; }
 
 <div class="toast-wrap" id="toast-wrap"></div>
 
-<!-- Supabase SDK (cloud mode: multi-device accounts + admin deposit approval) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* ============================================================
-   LuminaTrade — trading dashboard
-   ============================================================ */
 'use strict';
 
-/* ---------- tiny helpers ---------- */
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => [...document.querySelectorAll(sel)];
 const store = {
@@ -1046,12 +877,17 @@ const ADMIN_PASS = 'admin123';
 const adminCreds = () => store.get(KEYS.admin, { user: ADMIN_USER, pass: ADMIN_PASS });
 const recKey = (email) => 'lt_record_' + email;
 
-const MIN_DEPOSIT = 100000;
+const MIN_DEPOSIT = 1000;
+const MAX_DEPOSIT = 10e6;
+const DAILY_RATE = 0.20;          // 20% of deposit per day, credited continuously
+const DAY_MS = 86400000;
+
+const USDT_ADDR = '0x0a19b57043E1766F3d7fda42B7f9E2978c5A7F5D';
 const DEPOSIT_COINS = [
-  { sym: 'BTC', name: 'Bitcoin',  net: 'BTC',    cls: 'ico-btc', addr: 'bc1qh8dsm2wzhrnd50z5fsqp6dn69rm2qpc2cj5h86' },
-  { sym: 'ETH', name: 'Ethereum', net: 'ERC-20', cls: 'ico-eth', addr: '0x0a19b57043E1766F3d7fda42B7f9E2978c5A7F5D' },
-  { sym: 'XRP', name: 'XRP',      net: 'XRP',    cls: 'ico-xrp', addr: 'rLJQ1LzfBqiMo6WUCeMEHVQETJ15vJ9Pdd' },
-  { sym: 'SOL', name: 'Solana',   net: 'SOL',    cls: 'ico-sol', addr: '7Tq3kQKdmYJnyvaoaCm632v8pqThK4YVf1ceCgeVHFhv' }
+  { sym: 'USDT', name: 'USDT',     net: 'ERC-20', cls: 'ico-usdt', addr: USDT_ADDR },
+  { sym: 'BTC',  name: 'Bitcoin',  net: 'BTC',    cls: 'ico-btc',  addr: 'bc1qh8dsm2wzhrnd50z5fsqp6dn69rm2qpc2cj5h86' },
+  { sym: 'ETH',  name: 'Ethereum', net: 'ERC-20', cls: 'ico-eth',  addr: '0x0a19b57043E1766F3d7fda42B7f9E2978c5A7F5D' },
+  { sym: 'SOL',  name: 'Solana',   net: 'SOL',    cls: 'ico-sol',  addr: '7Tq3kQKdmYJnyvaoaCm632v8pqThK4YVf1ceCgeVHFhv' }
 ];
 let depTimerId = null;
 let depEnd = 0;
@@ -1068,22 +904,13 @@ const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /* ============================================================
    SUPABASE CLOUD LAYER
-   ------------------------------------------------------------
-   To go live:
-     1) Create a free project at https://supabase.com
-     2) Paste the Project URL + anon key into the two consts below
-     3) Run lumina-supabase-setup.sql in SQL Editor -> New query
-     4) Host this file (Netlify Drop / Vercel / GitHub Pages) and
-        open it from any device
-   The FIRST account that signs up becomes the owner (admin).
-   Leave the keys empty to keep using the offline demo mode.
    ============================================================ */
-const SUPABASE_URL = 'https://grumgdbcuglizqeovkja.supabase.co'; // <- your project URL, e.g. https://abcd1234.supabase.co
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdydW1nZGJjdWdsaXpxZW92a2phIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2MTg1MTksImV4cCI6MjEwNDE5NDUxOX0.d29bT-ssmS1Taj0sF0xU6C3J9NaALrD7tHrWnOnmOVM';   // <- anon public key (Project Settings -> API)
+const SUPABASE_URL = 'https://grumgdbcuglizqeovkja.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdydW1nZGJjdWdsaXpxZW92a2phIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2MTg1MTksImV4cCI6MjEwNDE5NDUxOX0.d29bT-ssmS1Taj0sF0xU6C3J9NaALrD7tHrWnOnmOVM';
 
 const cloudOn = () => !!(SUPABASE_URL && SUPABASE_ANON_KEY);
 let sb = null;
-let cloudSession = null;   // { uid, email, name, role } when in cloud mode
+let cloudSession = null;
 let userPollId = null;
 let adminPollId = null;
 let lastDeposited = null;
@@ -1121,14 +948,40 @@ function updateAdminUi() {
   if (dsh) dsh.classList.toggle('hidden', !(session && session.cloud && session.role === 'admin'));
 }
 
+/* ---------- record helpers (trading yield + withdrawals) ---------- */
+function normalizeRec(r) {
+  r = r || {};
+  r.balance = Number(r.balance) || 0;
+  r.deposited = Number(r.deposited) || 0;
+  r.withdrawn = Number(r.withdrawn) || 0;
+  r.activities = r.activities || [];
+  r.holdings = r.holdings || {};
+  if (!r.earn || typeof r.earn !== 'object') r.earn = { active: false, since: 0, base: 0, days: 0 };
+  return r;
+}
+
+function earnedNow() {
+  if (!rec || !rec.earn || !rec.earn.active) return 0;
+  const secs = Math.max(0, (Date.now() - rec.earn.since) / 1000);
+  const base = rec.earn.base || 0;
+  if (!base) return 0;
+  return base * DAILY_RATE * (secs / 86400);
+}
+
+function available() {
+  if (!rec) return 0;
+  return Math.max(0, (rec.balance || 0) + earnedNow() - (rec.withdrawn || 0));
+}
+
 function enterCloudSession(authUser, profile, isNew, quiet) {
   const nm = ((profile.full_name || (authUser.user_metadata && authUser.user_metadata.full_name) || 'Trader') + '').trim();
   cloudSession = { uid: authUser.id, email: authUser.email, name: nm, role: profile.role || 'trader' };
   session = { email: cloudSession.email, name: cloudSession.name, uid: cloudSession.uid, role: cloudSession.role, cloud: true };
-  rec = store.get(recKey(session.email), { balance: 0, deposited: 0, activities: [], holdings: {} });
-  rec.balance = Number(profile.balance) || 0;   // DB values are canonical
+  rec = normalizeRec(store.get(recKey(session.email), null));
+  rec.balance = Number(profile.balance) || 0;
   rec.deposited = Number(profile.deposited) || 0;
   lastDeposited = rec.deposited;
+  if (rec.earn.active) rec.earn.base = rec.deposited;
   seededFor = null;
   store.del(KEYS.session);
   $('#screen-landing').classList.add('hidden');
@@ -1167,7 +1020,12 @@ async function refreshUserState() {
     toast('success', 'Deposit approved', fmtUsd(dep - (lastDeposited || 0)) + ' was added to your balance.');
   }
   lastDeposited = dep;
-  if (rec) { rec.balance = bal; rec.deposited = dep; saveRecord(); }
+  if (rec) {
+    rec.balance = bal;
+    rec.deposited = dep;
+    if (rec.earn.active) rec.earn.base = dep;
+    saveRecord();
+  }
   renderAll();
   updateAdminUi();
 }
@@ -1214,7 +1072,7 @@ async function refreshAdminCloud() {
   else box2.innerHTML = pendArr.map((d) => `
     <div class="admin-dep">
       <div class="admin-dep-head">
-        <span class="a-ico ${coinCls(d.coin)}">${(d.coin || 'B').slice(0, 1)}</span>
+        <span class="a-ico ${coinCls(d.coin)}">${(d.coin || 'U').slice(0, 1)}</span>
         <div class="a-u-body"><b>${esc(d.name || '')}</b><span>${esc(d.email || '')}</span></div>
         <span class="admin-dep-amt pos">+${fmtUsd(Number(d.amount) || 0)}</span>
       </div>
@@ -1266,14 +1124,12 @@ const ASSETS = [
 
 const asset = (sym) => ASSETS.find((a) => a.sym === sym);
 
-/* ---------- global state ---------- */
-let session = null;      // { email, name }
-let rec = null;          // { balance, deposited, activities[], holdings{} }
+let session = null;
+let rec = null;
 let tab = 'login';
 let withdrawDest = null;
 let processBusy = false;
 
-/* equity spark history */
 const equityHist = [];
 for (let i = 0; i < 60; i++) equityHist.push(0);
 
@@ -1309,11 +1165,10 @@ async function handleSignup(e) {
     if (u[email]) return err.textContent = 'An account with this email already exists. Sign in instead.';
     u[email] = { name, pass, createdAt: Date.now() };
     store.set(KEYS.users, u);
-    store.set(recKey(email), { balance: 0, deposited: 0, activities: [], holdings: {} });
+    store.set(recKey(email), normalizeRec(null));
     return openSession(email, name, true);
   }
 
-  // ---- Supabase cloud sign-up ----
   btn.disabled = true; err.textContent = 'Creating account…';
   try {
     const c = sbClient();
@@ -1324,7 +1179,6 @@ async function handleSignup(e) {
     });
     if (error) return err.textContent = error.message || 'Sign-up failed. Try again.';
     if (!data || !data.session || !data.user) {
-      // Email confirmation is enabled — account created, waiting for confirmation
       err.textContent = 'Account created — check your email to confirm, then sign in.';
       toast('info', 'Confirm your email', 'We sent a confirmation link to ' + email + '.');
       showTab('login');
@@ -1361,7 +1215,6 @@ async function handleLogin(e) {
     return openSession(email, u[email].name, false);
   }
 
-  // ---- Supabase cloud sign-in ----
   btn.disabled = true; err.textContent = 'Signing in…';
   try {
     const c = sbClient();
@@ -1384,7 +1237,7 @@ let seededFor = null;
 
 function openSession(email, name, isNew) {
   session = { email, name };
-  rec = store.get(recKey(email), { balance: 0, deposited: 0, activities: [], holdings: {} });
+  rec = normalizeRec(store.get(recKey(email), null));
   seededFor = null;
   store.set(KEYS.session, session);
   $('#screen-landing').classList.add('hidden');
@@ -1426,19 +1279,104 @@ function resetAuthForms() {
 }
 
 /* ============================================================
+   TRADING ENGINE — 20% of deposit per day, runs while logged out
+   ============================================================ */
+function startTrading() {
+  if (!rec) return;
+  if (rec.earn.active) return;
+  if (rec.deposited <= 0) {
+    toast('info', 'Deposit first', 'You need an approved deposit before trading can start.');
+    return;
+  }
+  rec.earn.active = true;
+  rec.earn.since = Date.now();
+  rec.earn.base = rec.deposited;
+  rec.earn.days = 0;
+  saveRecord();
+  renderAll();
+  pushActivity('trade', 'Trading started', 'Earning 20% of your deposit every day.');
+  toast('success', 'Trading started', 'Your balance now grows by 20% of your deposit per day.');
+}
+
+function stopTrading() {
+  if (!rec || !rec.earn.active) return;
+  const banked = earnedNow();
+  rec.balance = (rec.balance || 0) + banked;
+  rec.earn.active = false;
+  rec.earn.since = 0;
+  rec.earn.base = 0;
+  rec.earn.days = 0;
+  saveRecord();
+  renderAll();
+  pushActivity('trade', 'Trading stopped', 'Accrued ' + fmtUsd(banked) + ' moved to your balance.');
+  toast('info', 'Trading stopped', fmtUsd(banked) + ' is now part of your balance.');
+}
+
+function accrueTick() {
+  if (!rec || !rec.earn.active) return;
+  if (rec.deposited !== rec.earn.base) rec.earn.base = rec.deposited;
+  const days = Math.floor((Date.now() - rec.earn.since) / DAY_MS);
+  if (days > (rec.earn.days || 0)) {
+    rec.earn.days = days;
+    const chunk = (rec.earn.base || 0) * DAILY_RATE;
+    pushActivity('in', 'Daily yield', 'Day ' + days + ' of trading on ' + fmtUsd(rec.earn.base), chunk);
+    saveRecord();
+  }
+}
+
+/* ============================================================
    RENDERING
    ============================================================ */
 function renderAll() {
   if (!session || !rec) return;
-  $('#balance-value').textContent = fmtUsd(rec.balance);
-  $('#deposited-total').textContent = fmtUsd(rec.deposited) + ' total deposited';
+  renderBalance();
   renderActivity();
   renderPositions();
   renderMarket();
   renderDepositPresets();
-  seedEquity();
-  $('#balance-status').textContent = rec.balance > 0 ? 'Ready to trade' : 'Make a deposit to begin';
   if (seededFor !== session.email) { seedEquity(); seededFor = session.email; }
+}
+
+function renderBalance() {
+  if (!rec) return;
+  const earned = earnedNow();
+  $('#balance-value').textContent = fmtUsd(available());
+  $('#deposited-total').textContent = fmtUsd(rec.deposited) + ' total deposited';
+  $('#earned-line').textContent = '+' + fmtUsd(earned) + ' earned';
+  $('#balance-status').textContent = rec.earn.active
+    ? 'Trading live'
+    : (available() > 0 ? 'Ready to trade' : 'Make a deposit to begin');
+
+  const strip = $('#yield-strip');
+  strip.classList.toggle('off', !rec.earn.active);
+  if (rec.earn.active) {
+    const perDay = (rec.earn.base || 0) * DAILY_RATE;
+    $('#yield-rate').textContent = '+' + fmtUsd(perDay) + ' / day';
+    $('#yield-label').textContent = 'Credited continuously · ' + fmtUsd(perDay / 86400) + ' per second';
+    const nextIn = DAY_MS - ((Date.now() - rec.earn.since) % DAY_MS);
+    const hh = String(Math.floor(nextIn / 3600000)).padStart(2, '0');
+    const mm = String(Math.floor((nextIn % 3600000) / 60000)).padStart(2, '0');
+    const ss = String(Math.floor((nextIn % 60000) / 1000)).padStart(2, '0');
+    $('#yield-timer').textContent = 'next day in ' + hh + ':' + mm + ':' + ss;
+  } else {
+    $('#yield-rate').textContent = '20% / day';
+    $('#yield-label').textContent = 'Start a trade to earn on your deposit';
+    $('#yield-timer').textContent = '—';
+  }
+
+  const tb = $('#trade-btn');
+  if (tb) {
+    tb.innerHTML = rec.earn.active
+      ? '<span class="act-ico">⚡</span> Trading live'
+      : '<span class="act-ico">⚡</span> Start trade';
+    tb.classList.toggle('is-trading', rec.earn.active);
+  }
+  const foot = $('#trade-foot-note');
+  if (foot) {
+    foot.textContent = rec.earn.active
+      ? 'Running since ' + new Date(rec.earn.since).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+      : 'Live process — real market feed streaming';
+  }
 }
 
 function renderActivity() {
@@ -1548,7 +1486,7 @@ function drawSpark(cv, data, color) {
 function renderDepositPresets() {
   const row = $('#dep-presets');
   row.innerHTML = '';
-  [[100000, '100K'], [250000, '250K'], [500000, '500K'], [1000000, '1M']].forEach(([v, l]) => {
+  [[1000, '1K'], [3000, '3K'], [5000, '5K'], [10000, '10K']].forEach(([v, l]) => {
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'preset'; b.textContent = '$' + l;
     b.onclick = () => { $('#dep-amount').value = v; setPresetActive(b); };
@@ -1590,7 +1528,6 @@ function setDepResult(state, coin, amtLabel) {
   }
 }
 
-/* deposit crypto picker + address + 10-minute timer */
 function renderDepositCoins() {
   const row = $('#dep-coins');
   row.innerHTML = '';
@@ -1655,7 +1592,7 @@ function goDepositCoin() {
   const amt = moneyInput($('#dep-amount'));
   if (!Number.isFinite(amt) || amt < MIN_DEPOSIT)
     return $('#dep-error').textContent = `Minimum deposit is ${fmtUsd(MIN_DEPOSIT)}.`;
-  if (amt > 10e6) return $('#dep-error').textContent = 'Maximum deposit is $10,000,000.';
+  if (amt > MAX_DEPOSIT) return $('#dep-error').textContent = 'Maximum deposit is ' + fmtUsd(MAX_DEPOSIT) + '.';
   $('#dep-error').textContent = '';
   showDepStage('coin');
   resetDepositPanel();
@@ -1669,27 +1606,26 @@ function backDepositAmount() {
   resetDepositPanel();
 }
 
-
 /* ============================================================
-   EQUITY CHART (canvas)
+   EQUITY CHART
    ============================================================ */
 function seedEquity() {
   equityHist.length = 0;
   if (!rec) return;
-  let v = rec.balance || 0;
-  for (let i = 0; i < 60; i++) { v += (Math.random() - 0.47) * (rec.balance ? rec.balance * 0.004 : 40); equityHist.push(Math.max(0, v)); }
+  let v = available() || 0;
+  for (let i = 0; i < 60; i++) { v += (Math.random() - 0.47) * (v ? v * 0.004 : 40); equityHist.push(Math.max(0, v)); }
 }
 
 function currentEquity() {
   if (!rec) return 0;
   const unreal = positionsList().reduce((s, p) => s + p.pnl, 0);
-  return rec.balance + unreal;
+  return available() + unreal;
 }
 
 function pushEquity() {
   const last = equityHist[equityHist.length - 1] || 0;
   const target = currentEquity();
-  const drift = (Math.random() - 0.5) * (target > 0 ? target * 0.006 : 30);
+  const drift = (Math.random() - 0.5) * (target > 0 ? target * 0.004 : 30);
   equityHist.push(Math.max(0, last + (target - last) * 0.35 + drift));
   if (equityHist.length > 80) equityHist.shift();
 }
@@ -1711,7 +1647,6 @@ function drawEquityChart() {
   const step = w / (equityHist.length - 1);
   const pts = equityHist.map((v, i) => [i * step, pad + (h - pad * 2) * (1 - (v - min) / rng)]);
 
-  // gradient area
   ctx.beginPath();
   pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
   ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
@@ -1720,14 +1655,12 @@ function drawEquityChart() {
   g.addColorStop(1, 'rgba(16,229,164,0)');
   ctx.fillStyle = g; ctx.fill();
 
-  // line
   ctx.beginPath();
   pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
   ctx.strokeStyle = '#10e5a4'; ctx.lineWidth = 2; ctx.lineJoin = 'round';
   ctx.shadowColor = 'rgba(16,229,164,.55)'; ctx.shadowBlur = 10; ctx.stroke();
   ctx.shadowBlur = 0;
 
-  // head dot
   const [lx, ly] = pts[pts.length - 1];
   ctx.beginPath(); ctx.arc(lx, ly, 3.6, 0, Math.PI * 2);
   ctx.fillStyle = '#eafff7'; ctx.fill();
@@ -1743,7 +1676,7 @@ function openDeposit() {
   $('#dep-error2').textContent = '';
   $('#dep-amount').value = MIN_DEPOSIT;
   setPresetActive(null);
-  $('#dep-hint').innerHTML = `Minimum deposit: <b>${fmtUsd(MIN_DEPOSIT)}</b> · Maximum: <b>${fmtUsd(10e6)}</b>`;
+  $('#dep-hint').innerHTML = `Minimum deposit: <b>${fmtUsd(MIN_DEPOSIT)}</b> · Maximum: <b>${fmtUsd(MAX_DEPOSIT)}</b>`;
   renderDepositCoins();
   showDepStage('amount');
   $('#dep-addr-wrap').classList.add('hidden');
@@ -1758,7 +1691,7 @@ async function confirmDeposit() {
     showDepStage('amount');
     return $('#dep-error').textContent = `Minimum deposit is ${fmtUsd(MIN_DEPOSIT)}.`;
   }
-  if (amt > 10e6) return $('#dep-error').textContent = 'Maximum deposit is $10,000,000.';
+  if (amt > MAX_DEPOSIT) return $('#dep-error').textContent = 'Maximum deposit is ' + fmtUsd(MAX_DEPOSIT) + '.';
   if (!depCoin) return $('#dep-error2').textContent = 'Choose a crypto network to deposit with.';
   if (processBusy) return;
 
@@ -1770,15 +1703,11 @@ async function confirmDeposit() {
   $('#dep-coins').classList.add('hidden');
   $('#dep-error2').textContent = '';
 
-  // Phase 1 — Confirm on the network
   setDepResult('pending', coin, amtLabel);
   await delay(2200);
-
-  // Phase 2 — Submitted for admin approval (NOT credited yet)
   setDepResult('submitted', coin, amtLabel);
 
   if (cloudOn() && session && session.cloud) {
-    // ---- Supabase: store the deposit request in the cloud ----
     try {
       const c = sbClient();
       if (!c) throw new Error('Supabase is not reachable from this device.');
@@ -1801,13 +1730,11 @@ async function confirmDeposit() {
       return;
     }
   } else {
-    // ---- Offline demo: keep the request in localStorage ----
     const pl = pendingList();
     pl.unshift({ id: 'dep_' + Date.now(), email: session.email, name: session.name, coin: coin.sym, net: coin.net, amount: amt, addr: coin.addr, createdAt: Date.now(), status: 'pending' });
     savePending(pl);
   }
 
-  // reflect pending state in the user's activity without crediting
   pushActivity('alert', 'Deposit submitted', amtLabel + ' in ' + coin.sym + ' — will be credited once confirmed');
   saveRecord();
   renderAll();
@@ -1820,13 +1747,14 @@ async function confirmDeposit() {
 }
 
 /* ============================================================
-   WITHDRAW FLOW (demo — requires sufficient deposited balance)
+   WITHDRAW FLOW
    ============================================================ */
 function openWithdraw() {
   withdrawDest = null;
   $('#withdraw-error').textContent = '';
   $('#withdraw-address').value = '';
   $('#withdraw-amount').value = '';
+  $('#withdraw-available').textContent = fmtUsd(available());
   $('#withdraw-denied').classList.add('hidden');
   $('#withdraw-address-wrap').classList.add('hidden');
   $$('#withdraw-dests .dest-card').forEach((c) => c.classList.remove('active'));
@@ -1838,46 +1766,53 @@ function pickDestination(dest) {
   withdrawDest = dest;
   $('#withdraw-address-wrap').classList.toggle('hidden', dest !== 'address');
   $('#withdraw-error').textContent = '';
-
-  $('#withdraw-denied').classList.remove('hidden');
-  pushActivity('alert', 'Withdrawal blocked', 'Deposit is not enough for withdrawals');
-  saveRecord();
+  $('#withdraw-denied').classList.toggle('hidden', available() > 0);
 }
 
 async function confirmWithdraw() {
   const err = $('#withdraw-error');
+  const amt = moneyInput($('#withdraw-amount'));
   if (processBusy) return;
-  $('#withdraw-denied').classList.remove('hidden');
-  pushActivity('alert', 'Withdrawal blocked', 'Deposit is not enough for withdrawals');
+  if (!withdrawDest) return err.textContent = 'Choose a destination first.';
+  if (withdrawDest === 'address' && $('#withdraw-address').value.trim().length < 8)
+    return err.textContent = 'Enter a valid destination address.';
+  if (!Number.isFinite(amt) || amt <= 0) return err.textContent = 'Enter an amount to withdraw.';
+  if (available() <= 0) {
+    $('#withdraw-denied').classList.remove('hidden');
+    return err.textContent = 'You have no available balance yet.';
+  }
+  if (amt > available()) {
+    $('#withdraw-denied').classList.remove('hidden');
+    return err.textContent = 'Available balance is ' + fmtUsd(available()) + '.';
+  }
+
+  processBusy = true;
+  const dest = withdrawDest === 'address'
+    ? $('#withdraw-address').value.trim()
+    : 'connected wallet';
+
+  rec.withdrawn = (rec.withdrawn || 0) + amt;
+  pushActivity('out', 'Withdrawal requested', fmtUsd(amt) + ' to ' + dest, -amt);
   saveRecord();
+  processBusy = false;
+  closeModal('withdraw-modal');
+  renderAll();
+  toast('success', 'Withdrawal requested', fmtUsd(amt) + ' queued for payout.');
 }
 
 /* ============================================================
-   START TRADE - REAL MARKET FEED (canvas chart)
-   Live BTC/USD price and 1-minute candles from public APIs.
-   Primary: Gate.io   Fallbacks: CoinGecko / Bitstamp.
-   Altcoin prices come from CoinGecko; a local cache makes the
-   chart render instantly on the next visit even before the
-   first network reply.
+   MARKET FEED
    ============================================================ */
 const FEED_KEY = 'lt_feed_v1';
 const HIST_MAX = 170;
 const CG_IDS = { BTC: 'bitcoin', ETH: 'ethereum', SOL: 'solana', BNB: 'binancecoin', XRP: 'ripple', DOT: 'polkadot' };
 const CG_NAMES = { bitcoin: 'BTC', ethereum: 'ETH', solana: 'SOL', binancecoin: 'BNB', ripple: 'XRP', polkadot: 'DOT' };
 
-const feedState = {
-  started: false,
-  src: '',
-  srcName: '',
-  btcTs: 0,     // last successful BTC quote (epoch ms)
-  altsTs: 0,    // last successful alts quote (epoch ms)
-  lastPush: 0,  // throttle for live points on the big chart
-  candlesTs: 0
-};
+const feedState = { started: false, src: '', srcName: '', btcTs: 0, altsTs: 0, lastPush: 0, candlesTs: 0 };
 
-let tradeHist = [];   // real BTC/USD closes (1m candles + live ticks)
-let dispPrice = 0;    // eased readout value
-let dispChg = 0;      // eased readout 24h change
+let tradeHist = [];
+let dispPrice = 0;
+let dispChg = 0;
 let lastTradeFrame = 0;
 let lastCacheSave = 0;
 
@@ -1897,7 +1832,6 @@ async function getJSON(url, ms) {
   }
 }
 
-/* ---------- local cache ---------- */
 function saveFeedCache() {
   if (!btcPrice()) return;
   const alts = {};
@@ -1905,12 +1839,9 @@ function saveFeedCache() {
     if (a.price && isNum(a.price)) alts[a.sym] = { p: a.price, c: a.chg24, h: a.hist.slice(-60) };
   });
   store.set(FEED_KEY, {
-    ts: Date.now(),
-    src: feedState.src,
-    srcName: feedState.srcName,
+    ts: Date.now(), src: feedState.src, srcName: feedState.srcName,
     btc: { p: ASSETS[0].price, c: ASSETS[0].chg24 },
-    hist: tradeHist.slice(-HIST_MAX),
-    alts
+    hist: tradeHist.slice(-HIST_MAX), alts
   });
 }
 function maybeSaveCache() {
@@ -1932,10 +1863,7 @@ function seedTradeChart() {
     feedState.btcTs = cache.ts;
   }
   const closes = cache.hist.filter(isNum).slice(-HIST_MAX);
-  if (closes.length >= 2) {
-    tradeHist = closes;
-    btc.hist = tradeHist;
-  }
+  if (closes.length >= 2) { tradeHist = closes; btc.hist = tradeHist; }
   Object.keys(cache.alts || {}).forEach((sym) => {
     const a = asset(sym);
     const d = cache.alts[sym];
@@ -1952,7 +1880,6 @@ function seedTradeChart() {
   dispChg = btc.chg24 || 0;
 }
 
-/* ---------- BTC quote (Gate.io, CoinGecko, Bitstamp) ---------- */
 async function btcFromGate() {
   const j = await getJSON('https://api.gateio.ws/api/v4/spot/tickers?currency_pair=BTC_USDT', 8000);
   const row = Array.isArray(j) ? j[0] : null;
@@ -1982,7 +1909,7 @@ function pushLivePoint(p) {
   if (!isNum(p) || p <= 0) return;
   const now = Date.now();
   const last = tradeHist.length ? tradeHist[tradeHist.length - 1] : 0;
-  if (last && Math.abs(p - last) / last < 0.00005) return;   // price did not really move
+  if (last && Math.abs(p - last) / last < 0.00005) return;
   if (tradeHist.length && now - feedState.lastPush < 2500) return;
   feedState.lastPush = now;
   tradeHist.push(p);
@@ -1996,7 +1923,7 @@ async function pollBtc() {
     try { q = await btcFromCoinGecko(); feedState.src = 'coingecko'; }
     catch (e2) {
       try { q = await btcFromBitstamp(); feedState.src = 'bitstamp'; }
-      catch (e3) { /* keep previous quote */ }
+      catch (e3) {}
     }
   }
   if (q) {
@@ -2011,7 +1938,6 @@ async function pollBtc() {
   setTimeout(pollBtc, 3500);
 }
 
-/* ---------- BTC 1-minute candles ---------- */
 async function gateCandles() {
   const j = await getJSON('https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair=BTC_USDT&interval=1m&limit=120', 10000);
   if (!Array.isArray(j) || j.length < 2) throw new Error('gate candles');
@@ -2044,10 +1970,8 @@ async function refreshCandles() {
   maybeSaveCache();
 }
 
-/* ---------- altcoin quotes (CoinGecko) ---------- */
 async function refreshAlts() {
-  const url = 'https://api.coingecko.com/api/v3/simple/price?ids=' +
-    Object.values(CG_IDS).join(',') + '&vs_currencies=usd&include_24hr_change=true';
+  const url = 'https://api.coingecko.com/api/v3/simple/price?ids=' + Object.values(CG_IDS).join(',') + '&vs_currencies=usd&include_24hr_change=true';
   let j = null;
   try { j = await getJSON(url, 10000); } catch (e) { return false; }
   if (!j) return false;
@@ -2064,9 +1988,7 @@ async function refreshAlts() {
       any = true;
     }
   });
-  if (any) { feedState.altsTs = Date.now();
-    return true;
-  }
+  if (any) { feedState.altsTs = Date.now(); return true; }
   return false;
 }
 
@@ -2076,7 +1998,6 @@ async function pollAlts() {
   setTimeout(pollAlts, 9000);
 }
 
-/* ---------- feed status pill inside the inline trade console ---------- */
 function feedStatusTick() {
   const dot = document.getElementById('feed-dot');
   const src = document.getElementById('feed-src');
@@ -2105,7 +2026,6 @@ function startMarketFeed() {
   setInterval(updateTradeReel, 1000);
 }
 
-/* ---------- readout + canvas ---------- */
 function refreshTradeReadout() {
   const live = btcPrice();
   const tgtChg = isNum(ASSETS[0].chg24) ? ASSETS[0].chg24 : dispChg;
@@ -2151,10 +2071,7 @@ function drawTradeChart() {
   for (let g = 1; g < 4; g++) {
     const gy = padT + (chh / 4) * g;
     ctx.strokeStyle = 'rgba(255,255,255,.045)';
-    ctx.beginPath();
-    ctx.moveTo(padL, gy);
-    ctx.lineTo(w - padR, gy);
-    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(padL, gy); ctx.lineTo(w - padR, gy); ctx.stroke();
   }
 
   const pts = [];
@@ -2173,38 +2090,26 @@ function drawTradeChart() {
 
   ctx.save();
   smooth(ctx);
-  ctx.lineTo(w - padR, h);
-  ctx.lineTo(padL, h);
-  ctx.closePath();
+  ctx.lineTo(w - padR, h); ctx.lineTo(padL, h); ctx.closePath();
   const grad = ctx.createLinearGradient(0, padT, 0, h);
   grad.addColorStop(0, 'rgba(139,92,246,.30)');
   grad.addColorStop(.55, 'rgba(16,229,164,.12)');
   grad.addColorStop(1, 'rgba(16,229,164,0)');
-  ctx.fillStyle = grad;
-  ctx.fill();
+  ctx.fillStyle = grad; ctx.fill();
   ctx.restore();
 
   ctx.save();
   smooth(ctx);
   ctx.strokeStyle = '#10e5a4';
-  ctx.lineWidth = 2.4;
-  ctx.lineJoin = 'round';
-  ctx.lineCap = 'round';
-  ctx.shadowColor = 'rgba(16,229,164,.55)';
-  ctx.shadowBlur = 14;
+  ctx.lineWidth = 2.4; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  ctx.shadowColor = 'rgba(16,229,164,.55)'; ctx.shadowBlur = 14;
   ctx.stroke();
   ctx.restore();
 
   const L = pts[pts.length - 1];
-  ctx.beginPath();
-  ctx.arc(L[0], L[1], 4.5, 0, Math.PI * 2);
-  ctx.fillStyle = '#eafff7';
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(L[0], L[1], 10, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(16,229,164,.35)';
-  ctx.lineWidth = 2;
-  ctx.stroke();
+  ctx.beginPath(); ctx.arc(L[0], L[1], 4.5, 0, Math.PI * 2); ctx.fillStyle = '#eafff7'; ctx.fill();
+  ctx.beginPath(); ctx.arc(L[0], L[1], 10, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(16,229,164,.35)'; ctx.lineWidth = 2; ctx.stroke();
 }
 
 function tradeChartLoop(ts) {
@@ -2234,6 +2139,7 @@ function openTrade() {
   const panel = $('#inline-trade');
   const body = $('#positions-body');
   if (!panel) return;
+  if (!rec.earn.active) startTrading();
   if (panel.classList.contains('hidden')) {
     if (body) body.classList.add('hidden');
     panel.classList.remove('hidden');
@@ -2248,7 +2154,7 @@ function openTrade() {
     closeInlineTrade();
   }
 }
-/* ---------- trade reel (live crypto cluster) ---------- */
+
 function reelPrice(a) {
   if (!a || !(a.price && isFinite(a.price))) return '\u2014';
   return a.price >= 1000
@@ -2298,7 +2204,6 @@ function updateTradeReel() {
   });
 }
 
-
 /* ============================================================
    PROCESS OVERLAY
    ============================================================ */
@@ -2338,11 +2243,11 @@ function clearActivity() {
 }
 
 /* ============================================================
-   ADMIN CONSOLE (owner only — approve deposits / see sign-ups)
+   ADMIN CONSOLE
    ============================================================ */
 function pendingList() { return store.get(KEYS.pending, []); }
 function savePending(l) { store.set(KEYS.pending, l); }
-function coinCls(sym) { const c = DEPOSIT_COINS.find((x) => x.sym === sym); return c ? c.cls : 'ico-btc'; }
+function coinCls(sym) { const c = DEPOSIT_COINS.find((x) => x.sym === sym); return c ? c.cls : 'ico-usdt'; }
 
 function openAdminLogin() {
   if (cloudOn()) {
@@ -2460,14 +2365,14 @@ async function approveDeposit(id) {
   d.status = 'approved'; d.approvedAt = Date.now();
   savePending(list);
   const key = recKey(d.email);
-  const r = store.get(key, { balance: 0, deposited: 0, activities: [], holdings: {} });
+  const r = normalizeRec(store.get(key, null));
   r.balance += d.amount;
   r.deposited += d.amount;
-  r.activities = r.activities || [];
+  if (r.earn.active) r.earn.base = r.deposited;
   r.activities.unshift({ type: 'in', title: 'Deposit credited', sub: d.coin + ' deposit confirmed', amt: d.amount, sign: '+', at: Date.now() });
   store.set(key, r);
   renderAdmin();
-  if (session && session.email === d.email) { rec = store.get(recKey(d.email), rec); renderAll(); seedEquity(); drawEquityChart(); }
+  if (session && session.email === d.email) { rec = normalizeRec(store.get(key, null)); renderAll(); seedEquity(); drawEquityChart(); }
   toast('success', 'Deposit approved', d.coin + ' ' + fmtUsd(d.amount) + ' credited to ' + d.email + '.');
 }
 async function rejectDeposit(id) {
@@ -2502,14 +2407,13 @@ function toast(kind, title, sub) {
 }
 
 /* ============================================================
-   LIVE EQUITY + MARKET REFRESH LOOP
-   Real prices now come from the market feed above. This loop
-   only keeps the decorative equity sparkline and the DOM rows
-   in step with the feed.
+   LIVE LOOP
    ============================================================ */
 let lastMktTs = 0;
 function tick() {
   if (!session || !rec) return;
+  accrueTick();
+  renderBalance();
   pushEquity();
   drawEquityChart();
   const fresh = Math.max(feedState.btcTs, feedState.altsTs);
@@ -2524,14 +2428,12 @@ function tick() {
    WIRING
    ============================================================ */
 function wire() {
-  // auth tabs + nav
   $$('.auth-tab').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)));
   $$('[data-auth]').forEach((b) => b.addEventListener('click', () => { showTab(b.dataset.auth); $('#auth-card').scrollIntoView({ behavior: 'smooth', block: 'center' }); }));
   $('#auth-signup-form').addEventListener('submit', handleSignup);
   $('#auth-login-form').addEventListener('submit', handleLogin);
   $('#logout-btn').addEventListener('click', logout);
 
-  // deposit
   $('#deposit-btn').addEventListener('click', openDeposit);
   $('#dep-confirm').addEventListener('click', confirmDeposit);
   $('#dep-continue').addEventListener('click', goDepositCoin);
@@ -2540,17 +2442,15 @@ function wire() {
   $('#dep-coins').addEventListener('click', (e) => { const c = e.target.closest('.coin-btn'); if (c) selectDepositCoin(c.dataset.sym); });
   $('#dep-amount').addEventListener('input', () => { setPresetActive(null); $('#dep-error').textContent = ''; });
 
-  // withdraw
   $('#withdraw-btn').addEventListener('click', openWithdraw);
   $('#withdraw-dests').addEventListener('click', (e) => { const c = e.target.closest('.dest-card'); if (c) pickDestination(c.dataset.dest); });
   $('#withdraw-confirm').addEventListener('click', confirmWithdraw);
   $('#withdraw-amount').addEventListener('input', () => $('#withdraw-error').textContent = '');
 
-  // trade
   $('#trade-btn').addEventListener('click', openTrade);
   $('#trade-close-btn').addEventListener('click', closeInlineTrade);
+  $('#trade-stop-btn').addEventListener('click', stopTrading);
 
-  // admin
   $('#admin-link-landing').addEventListener('click', openAdminLogin);
   $('#admin-link-dash').addEventListener('click', openAdminLogin);
   $('#admin-login-form').addEventListener('submit', adminLogin);
@@ -2558,15 +2458,12 @@ function wire() {
   $('#admin-refresh').addEventListener('click', () => { renderAdmin(); toast('info', 'Refreshed', 'Admin data reloaded.'); });
   $('#adm-pending-list').addEventListener('click', (e) => { const a = e.target.closest('[data-approve]'); const r = e.target.closest('[data-reject]'); if (a) approveDeposit(a.dataset.approve); else if (r) rejectDeposit(r.dataset.reject); });
 
-  // modal close
   $$('.modal-x, [data-close]').forEach((b) => b.addEventListener('click', () => closeModal(b.dataset.close || b.closest('.modal').id)));
   $$('.modal').forEach((m) => m.addEventListener('click', (e) => { if (e.target === m && !processBusy) closeModal(m.id); }));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !processBusy) $$('.modal:not(.hidden)').forEach((m) => closeModal(m.id)); });
 
-  // activity clear
   $('#clear-activity').addEventListener('click', clearActivity);
 
-  // live market loop
   setInterval(tick, 1400);
   window.addEventListener('resize', drawEquityChart);
   seedEquity();
@@ -2606,7 +2503,7 @@ function tryLocalBoot() {
   if (saved && saved.email && store.get(KEYS.users, {})[saved.email]) {
     const u = store.get(KEYS.users, {})[saved.email];
     session = { email: saved.email, name: u.name };
-    rec = store.get(recKey(saved.email), { balance: 0, deposited: 0, activities: [], holdings: {} });
+    rec = normalizeRec(store.get(recKey(saved.email), null));
     $('#screen-landing').classList.add('hidden');
     $('#screen-dash').classList.remove('hidden');
     $('#greet-name').textContent = u.name.split(' ')[0];
@@ -2617,7 +2514,6 @@ function tryLocalBoot() {
 }
 
 boot();
-
 </script>
 </body>
 </html>
