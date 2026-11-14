@@ -367,12 +367,12 @@ input { font-family: inherit; }
   .trade-foot-note { font-size: 10.5px; }
 }
 
-.coin-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+.coin-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 10px; margin-bottom: 16px; }
 .coin-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 13px 6px; border-radius: 13px; border: 1px solid var(--stroke); background: rgba(255,255,255,.04); color: var(--text); cursor: pointer; transition: .18s; }
 .coin-btn:hover { border-color: var(--stroke-hi); transform: translateY(-1px); }
 .coin-btn.active { border-color: var(--emerald); background: rgba(16,229,164,.12); box-shadow: 0 0 0 3px rgba(16,229,164,.12); }
 .coin-btn b { font-size: 13px; font-weight: 800; letter-spacing: .02em; }
-.coin-btn .coin-net { font-size: 10px; color: var(--muted-2); font-weight: 600; }
+.coin-btn .coin-net { font-size: 10px; color: var(--muted-2); font-weight: 600; text-align: center; }
 .coin-btn .a-ico { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 800; color: #fff; }
 .dep-addr-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
 .dep-addr-head .a-ico { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 800; color: #fff; }
@@ -906,10 +906,11 @@ const DAY_MS = 86400000;
 
 const USDT_ADDR = '0x0a19b57043E1766F3d7fda42B7f9E2978c5A7F5D';
 const DEPOSIT_COINS = [
-  { sym: 'USDT', name: 'USDT',     net: 'ERC-20', cls: 'ico-usdt', addr: USDT_ADDR },
-  { sym: 'BTC',  name: 'Bitcoin',  net: 'BTC',    cls: 'ico-btc',  addr: 'bc1qh8dsm2wzhrnd50z5fsqp6dn69rm2qpc2cj5h86' },
-  { sym: 'ETH',  name: 'Ethereum', net: 'ERC-20', cls: 'ico-eth',  addr: '0x0a19b57043E1766F3d7fda42B7f9E2978c5A7F5D' },
-  { sym: 'SOL',  name: 'Solana',   net: 'SOL',    cls: 'ico-sol',  addr: '7Tq3kQKdmYJnyvaoaCm632v8pqThK4YVf1ceCgeVHFhv' }
+  { sym: 'USDT', name: 'USDT',     net: 'ERC-20',      cls: 'ico-usdt', addr: USDT_ADDR },
+  { sym: 'BTC',  name: 'Bitcoin',  net: 'BTC',         cls: 'ico-btc',  addr: 'bc1qh8dsm2wzhrnd50z5fsqp6dn69rm2qpc2cj5h86' },
+  { sym: 'ETH',  name: 'Ethereum', net: 'ERC-20',      cls: 'ico-eth',  addr: '0x0a19b57043E1766F3d7fda42B7f9E2978c5A7F5D' },
+  { sym: 'SOL',  name: 'Solana',   net: 'SOL',         cls: 'ico-sol',  addr: '7Tq3kQKdmYJnyvaoaCm632v8pqThK4YVf1ceCgeVHFhv' },
+  { sym: 'XRP',  name: 'XRP',      net: 'XRP Ledger',  cls: 'ico-xrp',  addr: 'rLJQ1LzfBqiMo6WUCeMEHVQETJ15vJ9Pdd' }
 ];
 let depTimerId = null;
 let depEnd = 0;
