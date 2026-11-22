@@ -746,9 +746,8 @@ body::before {
 
           <div class="yield-strip off" id="yield-strip">
             <span class="y-dot"></span>
-            <b id="yield-rate">Daily</b>
-            <span id="yield-label">Start trading to earn daily</span>
-            <span class="y-right" id="yield-timer">—</span>
+            <span id="yield-label">Start trading to earn</span>
+            <b id="yield-rate">+$0.00</b>
           </div>
 
           <canvas id="balance-chart" class="balance-chart" width="900" height="180"></canvas>
@@ -1543,21 +1542,10 @@ function renderBalance() {
 
   const strip = $('#yield-strip');
   strip.classList.toggle('off', !rec.earn.active);
-  if (rec.earn.active) {
-    $('#yield-rate').textContent = 'Daily';
-    $('#yield-label').textContent = '+' + fmtUsd(rec.earn.dayEarned || 0) + ' today · credited continuously';
-    const nextIn = DAY_MS - ((Date.now() - rec.earn.since) % DAY_MS);
-    const hh = String(Math.floor(nextIn / 3600000)).padStart(2, '0');
-    const mm = String(Math.floor((nextIn % 3600000) / 60000)).padStart(2, '0');
-    const ss = String(Math.floor((nextIn % 60000) / 1000)).padStart(2, '0');
-    $('#yield-timer').textContent = 'next day in ' + hh + ':' + mm + ':' + ss;
-  } else {
-    $('#yield-rate').textContent = 'Daily';
-    $('#yield-label').textContent = earned > 0
-      ? 'Trading stopped · ' + fmtUsd(earned) + ' profit kept'
-      : 'Start trading to earn daily';
-    $('#yield-timer').textContent = '—';
-  }
+  $('#yield-rate').textContent = '+' + fmtUsd(earned);
+  $('#yield-label').textContent = rec.earn.active
+    ? 'Profit'
+    : (earned > 0 ? 'Profit kept' : 'Start trading to earn');
 
   const tb = $('#trade-btn');
   if (tb) {
