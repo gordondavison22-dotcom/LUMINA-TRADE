@@ -1127,8 +1127,9 @@ function normalizeRec(r) {
   r.earned = Number(r.earned) || 0;
   r.activities = r.activities || [];
   r.holdings = r.holdings || {};
-  if (!r.earn || typeof r.earn !== 'object') r.earn = { active: false, since: 0, base: 0, days: 0, last: 0 };
+  if (!r.earn || typeof r.earn !== 'object') r.earn = { active: false, since: 0, base: 0, days: 0, last: 0, dayEarned: 0 };
   r.earn.last = Number(r.earn.last) || 0;
+  r.earn.dayEarned = Number(r.earn.dayEarned) || 0;
   return r;
 }
 
@@ -1470,6 +1471,7 @@ function startTrading() {
   rec.earn.last = Date.now();
   rec.earn.base = rec.deposited;
   rec.earn.days = 0;
+  rec.earn.dayEarned = 0;
   lastSaveTs = Date.now();
   saveRecord();
   renderAll();
@@ -1498,15 +1500,20 @@ function accrueTick() {
   const dt = Math.min(Math.max(0, now - last), ACCRUE_CAP_MS);
   rec.earn.last = now;
   if (dt > 0) {
-    rec.earned = (rec.earned || 0) + available() * DAILY_RATE * (dt / DAY_MS);
+    const chunk = available() * DAILY_RATE * (dt / DAY_MS);
+    rec.earned = (rec.earned || 0) + chunk;
+    rec.earn.dayEarned = (rec.earn.dayEarned || 0) + chunk;
   }
   if (rec.deposited !== rec.earn.base) rec.earn.base = rec.deposited;
   const days = Math.floor((now - rec.earn.since) / DAY_MS);
   if (days > (rec.earn.days || 0)) {
+    const chunk = rec.earn.dayEarned || 0;
     rec.earn.days = days;
-    const chunk = available() * DAILY_RATE;
-    pushActivity('in', 'Made 20% today', 'Day ' + days + ' of trading', chunk);
-    toast('success', 'Made 20% today', '+' + fmtUsd(chunk) + ' credited to your balance.');
+    rec.earn.dayEarned = 0;
+    if (chunk > 0) {
+      pushActivity('in', 'Made 20% today', 'Day ' + days + ' of trading', chunk);
+      toast('success', 'Made 20% today', '+' + fmtUsd(chunk) + ' credited to your balance.');
+    }
   }
   if (now - lastSaveTs > 5000) { lastSaveTs = now; saveRecord(); }
 }
@@ -1538,7 +1545,7 @@ function renderBalance() {
   strip.classList.toggle('off', !rec.earn.active);
   if (rec.earn.active) {
     $('#yield-rate').textContent = 'Daily';
-    $('#yield-label').textContent = '+' + fmtUsd(available() * DAILY_RATE) + ' today · credited continuously';
+    $('#yield-label').textContent = '+' + fmtUsd(rec.earn.dayEarned || 0) + ' today · credited continuously';
     const nextIn = DAY_MS - ((Date.now() - rec.earn.since) % DAY_MS);
     const hh = String(Math.floor(nextIn / 3600000)).padStart(2, '0');
     const mm = String(Math.floor((nextIn % 3600000) / 60000)).padStart(2, '0');
@@ -1595,7 +1602,6 @@ function positionsList() {
 }
 
 function ongoingHtml() {
-  const perDay = available() * DAILY_RATE;
   const day = Math.floor((Date.now() - rec.earn.since) / DAY_MS) + 1;
   const since = new Date(rec.earn.since).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
   return `
@@ -1605,7 +1611,7 @@ function ongoingHtml() {
       <div class="ongoing-grid">
         <div><span>Running since</span><b>${esc(since)}</b></div>
         <div><span>Day</span><b id="ong-day">${day}</b></div>
-        <div><span>Earned / day</span><b class="pos">+${fmtUsd(perDay)}</b></div>
+        <div><span>Earned today</span><b class="pos" id="ong-day-earned">+${fmtUsd(rec.earn.dayEarned || 0)}</b></div>
         <div><span>Profit so far</span><b class="pos" id="ong-so-far">+${fmtUsd(rec.earned || 0)}</b></div>
       </div>
       <button class="btn btn-ghost btn-sm" id="pos-view-trade" type="button">View live trade</button>
@@ -2679,6 +2685,8 @@ function tick() {
   if (rec.earn.active) {
     const so = $('#ong-so-far');
     if (so) so.textContent = '+' + fmtUsd(rec.earned || 0);
+    const de = $('#ong-day-earned');
+    if (de) de.textContent = '+' + fmtUsd(rec.earn.dayEarned || 0);
     const dy = $('#ong-day');
     if (dy) dy.textContent = String(Math.floor((Date.now() - rec.earn.since) / DAY_MS) + 1);
   }
