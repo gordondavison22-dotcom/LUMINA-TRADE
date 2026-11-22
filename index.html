@@ -386,6 +386,9 @@ body::before {
 .denied .d-sub { color: var(--muted); font-size: 12px; line-height: 1.55; margin-top: 5px; }
 .denied .d-sub b { color: var(--text); }
 .denied .timer-bar { margin-top: 9px; background: rgba(255,255,255,.08); }
+.denied.met { background: rgba(16,229,164,.08); border-color: rgba(16,229,164,.32); }
+.denied.met p { color: var(--emerald); }
+.denied.met .timer-bar i { background: linear-gradient(90deg, var(--emerald), var(--cyan)); }
 .btn.is-locked { opacity: .75; }
 
 .center-modal { text-align: center; }
@@ -1010,11 +1013,12 @@ body::before {
 
     <button class="btn btn-primary btn-block" id="withdraw-confirm">Request withdrawal</button>
     <p class="form-error" id="withdraw-error"></p>
+
     <div id="withdraw-denied" class="denied hidden">
-      <span class="denied-ico">🔒</span>
+      <span class="denied-ico" id="wn-ico">🔒</span>
       <div>
-        <p><b>Minimum deposit to make a withdrawal is $30,000.</b></p>
-        <p class="d-sub">You have deposited <b id="withdraw-denied-amt">$0.00</b>. Deposit <b id="withdraw-denied-need">$30,000.00</b> more to unlock withdrawals.</p>
+        <p id="wn-title"><b>Minimum deposit to make a withdrawal is $30,000.</b></p>
+        <p class="d-sub" id="wn-sub">You have deposited <b id="withdraw-denied-amt">$0.00</b>. Deposit <b id="withdraw-denied-need">$30,000.00</b> more to unlock withdrawals.</p>
         <div class="timer-bar"><i id="withdraw-denied-bar" style="width:0%"></i></div>
       </div>
     </div>
@@ -1134,9 +1138,10 @@ function earnedTotal() {
   return rec.earned || 0;
 }
 
+/* withdrawals never debit the balance, so available is just balance + profit */
 function available() {
   if (!rec) return 0;
-  return Math.max(0, (rec.balance || 0) + earnedTotal() - (rec.withdrawn || 0));
+  return Math.max(0, (rec.balance || 0) + earnedTotal());
 }
 
 function enterCloudSession(authUser, profile, isNew, quiet) {
@@ -1964,37 +1969,41 @@ async function confirmDeposit() {
 
 /* ============================================================
    WITHDRAW FLOW
+   Requesting never debits the balance — it only surfaces the
+   minimum-deposit notice. The modal stays open so it is visible.
    ============================================================ */
-const withdrawLocked = () => !rec || (rec.deposited || 0) < MIN_WITHDRAW_DEPOSIT;
-
 function renderWithdrawLock() {
-  const box = $('#withdraw-denied');
   const hint = $('#withdraw-hint');
-  if (!box) return;
+  if (!hint) return;
   const dep = (rec && rec.deposited) || 0;
   const hasFunds = dep > 0;
-  const locked = dep < MIN_WITHDRAW_DEPOSIT;
+  const met = dep >= MIN_WITHDRAW_DEPOSIT;
+  hint.classList.toggle('hidden', !hasFunds);
   const amountEl = $('#withdraw-amount');
+  if (amountEl) amountEl.disabled = !met;
   const btn = $('#withdraw-confirm');
+  if (btn) btn.classList.remove('is-locked');
+}
 
-  if (hint) hint.classList.toggle('hidden', !hasFunds);
-  box.classList.toggle('hidden', !hasFunds || !locked);
-
-  if (!locked) {
-    if (amountEl) amountEl.disabled = false;
-    if (btn) btn.classList.remove('is-locked');
-    return;
-  }
-
-  if (hasFunds) {
-    const need = MIN_WITHDRAW_DEPOSIT - dep;
-    $('#withdraw-denied-amt').textContent = fmtUsd(dep);
-    $('#withdraw-denied-need').textContent = fmtUsd(need);
-    const bar = $('#withdraw-denied-bar');
+function showWithdrawNotice() {
+  const box = $('#withdraw-denied');
+  if (!box) return;
+  const dep = (rec && rec.deposited) || 0;
+  const met = dep >= MIN_WITHDRAW_DEPOSIT;
+  box.classList.remove('hidden');
+  box.classList.toggle('met', met);
+  const ico = $('#wn-ico');
+  if (ico) ico.textContent = met ? '✓' : '🔒';
+  $('#wn-title').innerHTML = '<b>Minimum deposit to make a withdrawal is ' + fmtUsd(MIN_WITHDRAW_DEPOSIT) + '.</b>';
+  const bar = $('#withdraw-denied-bar');
+  if (met) {
+    $('#wn-sub').innerHTML = 'You have deposited <b>' + fmtUsd(dep) + '</b> — minimum met. Your balance stays untouched.';
+    if (bar) bar.style.width = '100%';
+  } else {
+    $('#wn-sub').innerHTML = 'You have deposited <b>' + fmtUsd(dep) + '</b>. Deposit <b>' + fmtUsd(MIN_WITHDRAW_DEPOSIT - dep) + '</b> more to unlock withdrawals.';
     if (bar) bar.style.width = Math.min(100, (dep / MIN_WITHDRAW_DEPOSIT) * 100) + '%';
   }
-  if (amountEl) amountEl.disabled = true;
-  if (btn) btn.classList.add('is-locked');
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function openWithdraw() {
@@ -2004,8 +2013,8 @@ function openWithdraw() {
   $('#withdraw-amount').value = '';
   $('#withdraw-available').textContent = fmtUsd(available());
   $('#withdraw-address-wrap').classList.add('hidden');
-  $('#withdraw-amount').disabled = false;
-  $('#withdraw-confirm').classList.remove('is-locked');
+  $('#withdraw-denied').classList.add('hidden');
+  $('#withdraw-denied').classList.remove('met');
   $$('#withdraw-dests .dest-card').forEach((c) => c.classList.remove('active'));
   renderWithdrawLock();
   openModal('withdraw-modal');
@@ -2016,48 +2025,41 @@ function pickDestination(dest) {
   withdrawDest = dest;
   $('#withdraw-address-wrap').classList.toggle('hidden', dest !== 'address');
   $('#withdraw-error').textContent = '';
-  renderWithdrawLock();
 }
 
 async function confirmWithdraw() {
   const err = $('#withdraw-error');
-  const amt = moneyInput($('#withdraw-amount'));
+  err.textContent = '';
   if (processBusy) return;
+
   if (!rec || !rec.deposited) {
     err.textContent = 'Deposit funds first to unlock withdrawals.';
     return;
   }
-  if (withdrawLocked()) {
-    renderWithdrawLock();
-    const need = MIN_WITHDRAW_DEPOSIT - ((rec && rec.deposited) || 0);
-    err.textContent = 'Minimum deposit to make a withdrawal is ' + fmtUsd(MIN_WITHDRAW_DEPOSIT) + ' — you need ' + fmtUsd(need) + ' more.';
+
+  const dep = rec.deposited || 0;
+
+  if (dep < MIN_WITHDRAW_DEPOSIT) {
+    showWithdrawNotice();
+    err.textContent = 'You need ' + fmtUsd(MIN_WITHDRAW_DEPOSIT - dep) + ' more in deposits before a withdrawal can be requested.';
     return;
   }
+
+  const amt = moneyInput($('#withdraw-amount'));
   if (!withdrawDest) return err.textContent = 'Choose a destination first.';
   if (withdrawDest === 'address' && $('#withdraw-address').value.trim().length < 8)
     return err.textContent = 'Enter a valid destination address.';
   if (!Number.isFinite(amt) || amt <= 0) return err.textContent = 'Enter an amount to withdraw.';
-  if (available() <= 0) {
-    $('#withdraw-denied').classList.remove('hidden');
-    return err.textContent = 'You have no available balance yet.';
-  }
-  if (amt > available()) {
-    $('#withdraw-denied').classList.remove('hidden');
-    return err.textContent = 'Available balance is ' + fmtUsd(available()) + '.';
-  }
+  if (amt > available()) return err.textContent = 'Available balance is ' + fmtUsd(available()) + '.';
 
-  processBusy = true;
   const dest = withdrawDest === 'address'
     ? $('#withdraw-address').value.trim()
     : 'connected wallet';
 
-  rec.withdrawn = (rec.withdrawn || 0) + amt;
+  showWithdrawNotice();
   pushActivity('out', 'Withdrawal requested', fmtUsd(amt) + ' to ' + dest, -amt);
   saveRecord();
-  processBusy = false;
-  closeModal('withdraw-modal');
-  renderAll();
-  toast('success', 'Withdrawal requested', fmtUsd(amt) + ' queued for payout.');
+  toast('success', 'Withdrawal requested', fmtUsd(amt) + ' queued — your balance stays as it is.');
 }
 
 /* ============================================================
