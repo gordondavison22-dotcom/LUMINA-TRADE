@@ -65,6 +65,18 @@ input[type=number] { -moz-appearance: textfield; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.22); }
 ::-webkit-scrollbar-track { background: transparent; }
 
+/* aurora hairline across the very top */
+body::before {
+  content: '';
+  position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 3;
+  background: linear-gradient(90deg, transparent, var(--emerald), var(--cyan), var(--violet), transparent);
+  background-size: 200% 100%;
+  animation: aurora 9s linear infinite;
+  opacity: .8;
+  pointer-events: none;
+}
+@keyframes aurora { to { background-position: 200% 0; } }
+
 .bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
 .bg-grid {
   position: absolute; inset: -2px;
@@ -89,10 +101,10 @@ input[type=number] { -moz-appearance: textfield; }
   border-radius: var(--r-lg);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,.07);
 }
 
-.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; padding: 4px 9px; border-radius: 99px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; padding: 4px 9px; border-radius: 99px; box-shadow: inset 0 1px 0 rgba(255,255,255,.06); }
 .pill-demo { background: rgba(16,229,164,.12); color: var(--emerald); border: 1px solid rgba(16,229,164,.28); }
 .pill-ghost { background: rgba(255,255,255,.05); color: var(--muted); border: 1px solid var(--stroke); }
 .pill-sm { font-size: 9.5px; padding: 3px 8px; }
@@ -104,20 +116,36 @@ input[type=number] { -moz-appearance: textfield; }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
 .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--emerald); display: inline-block; box-shadow: 0 0 12px var(--emerald); animation: pulse 1.6s infinite; }
 
-.grad-text { background: var(--grad-main); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+.grad-text {
+  background: var(--grad-main);
+  background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  animation: gradShift 7s ease-in-out infinite;
+}
+@keyframes gradShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 
 .screen {
   position: relative; z-index: 1;
   min-height: 100vh; min-height: 100dvh;
   display: flex; flex-direction: column;
   padding-left: var(--sal); padding-right: var(--sar);
+  animation: screenIn .45s ease both;
 }
+@keyframes screenIn { from { opacity: 0; } }
 
 .btn { border: none; border-radius: var(--r-sm); font-weight: 600; font-size: 14px; color: var(--text); padding: 10px 18px; min-height: 44px; transition: transform .16s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease; }
 .btn:active { transform: translateY(1px) scale(.99); }
 .btn-ghost { background: rgba(255,255,255,.05); border: 1px solid var(--stroke); }
 .btn-ghost:hover { background: rgba(255,255,255,.1); border-color: var(--stroke-hi); }
-.btn-primary { background: linear-gradient(120deg, #10e5a4, #06c98f); color: #03241a; box-shadow: 0 10px 26px -10px rgba(16,229,164,.55); }
+.btn-primary { position: relative; overflow: hidden; background: linear-gradient(120deg, #10e5a4, #06c98f); color: #03241a; box-shadow: 0 10px 26px -10px rgba(16,229,164,.55); }
+.btn-primary::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(110deg, transparent 32%, rgba(255,255,255,.5) 50%, transparent 68%);
+  transform: translateX(-100%);
+  transition: transform .65s ease;
+}
+.btn-primary:hover::after { transform: translateX(100%); }
 .btn-primary:hover { box-shadow: 0 14px 32px -10px rgba(16,229,164,.7); transform: translateY(-1px); }
 .btn-block { width: 100%; padding: 14px; font-size: 15px; min-height: 50px; }
 .btn-link-ghost { background: transparent; color: var(--muted); border: 1px dashed var(--stroke); }
@@ -136,18 +164,32 @@ input[type=number] { -moz-appearance: textfield; }
 .btn-trade.is-trading { background: linear-gradient(120deg, rgba(16,229,164,.26), rgba(139,92,246,.1)); border-color: rgba(16,229,164,.6); box-shadow: 0 0 0 3px rgba(16,229,164,.14); }
 .btn-trade.is-trading .act-ico { color: var(--emerald); animation: pulse 1.6s infinite; }
 
+.glow-hint { animation: glowHint 2.8s ease-in-out infinite; }
+@keyframes glowHint {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16,229,164,0); }
+  50% { box-shadow: 0 0 0 5px rgba(16,229,164,.15), 0 12px 28px -12px rgba(16,229,164,.5); }
+}
+
 .link-btn { background: none; border: none; color: var(--muted); font-size: 12.5px; font-weight: 600; min-height: 32px; padding: 0 6px; }
 .link-btn:hover { color: var(--emerald); }
 
 .topbar { position: relative; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: calc(20px + var(--sat)) clamp(16px, 4vw, 52px) 20px; }
+.topbar::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.1), transparent); }
 .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.brand-mark { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; font-size: 16px; color: #04231a; background: var(--grad-main); box-shadow: 0 8px 22px -6px rgba(16,229,164,.65); flex: none; }
+.brand-mark { position: relative; overflow: hidden; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; font-size: 16px; color: #04231a; background: var(--grad-main); box-shadow: 0 8px 22px -6px rgba(16,229,164,.65); flex: none; }
+.brand-mark::after {
+  content: ''; position: absolute; top: 0; bottom: 0; width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.9), transparent);
+  transform: translateX(-150%);
+  animation: brandShine 4.5s ease-in-out infinite;
+}
+@keyframes brandShine { 0%, 62% { transform: translateX(-150%); } 100% { transform: translateX(330%); } }
 .brand-name { font-family: var(--font-display); font-weight: 700; font-size: 20px; letter-spacing: -.02em; white-space: nowrap; }
 .brand-name span { color: var(--emerald); }
 .topbar-nav { display: flex; gap: 8px; flex: none; }
 
 .landing { flex: 1; width: min(1180px, 92%); margin: 0 auto; display: grid; grid-template-columns: 1.15fr .85fr; gap: 56px; align-items: center; padding: 44px 0 40px; }
-.hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; letter-spacing: .04em; color: var(--muted); background: rgba(255,255,255,.05); border: 1px solid var(--stroke); padding: 8px 14px; border-radius: 99px; margin-bottom: 22px; }
+.hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; letter-spacing: .04em; color: var(--muted); background: rgba(255,255,255,.05); border: 1px solid var(--stroke); padding: 8px 14px; border-radius: 99px; margin-bottom: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.06); }
 .hero-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(32px, 4.6vw, 58px); line-height: 1.08; letter-spacing: -.03em; }
 .hero-sub { margin-top: 20px; color: var(--muted); font-size: clamp(14.5px, 1.35vw, 17px); line-height: 1.7; max-width: 46ch; }
 .hero-stats { display: flex; gap: clamp(22px, 3.5vw, 46px); margin-top: 38px; }
@@ -178,15 +220,23 @@ input[type=number] { -moz-appearance: textfield; }
 
 .dash-grid { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); gap: 22px; align-items: start; }
 .dash-grid > * { min-width: 0; }
-.card { max-width: 100%; }
+.card { max-width: 100%; transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease; }
+.card:hover { border-color: var(--stroke-hi); transform: translateY(-2px); box-shadow: 0 32px 72px -26px rgba(0,0,0,.72); }
 .dash-main { display: flex; flex-direction: column; gap: 22px; }
 .dash-side { display: flex; flex-direction: column; gap: 22px; position: sticky; top: 20px; }
 
 .card { padding: 26px; }
-.card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 16px; }
-.card-label { font-size: 12px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--muted); display: inline-flex; align-items: center; gap: 9px; }
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 18px; }
+.card-label { position: relative; font-size: 12px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--muted); display: inline-flex; align-items: center; gap: 9px; }
+.card-label::after { content: ''; position: absolute; left: 0; bottom: -7px; height: 1px; width: 100%; background: linear-gradient(90deg, rgba(16,229,164,.55), transparent); }
 
 .balance-card { position: relative; overflow: hidden; padding: 30px 30px 24px; }
+.balance-card::before {
+  content: ''; position: absolute; top: -60%; left: -20%; width: 140%; height: 140%;
+  background: radial-gradient(circle at 30% 18%, rgba(16,229,164,.12), transparent 55%);
+  pointer-events: none;
+}
+.balance-card > * { position: relative; z-index: 1; }
 .balance-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .bal-usd-flag { font-size: 10.5px; font-weight: 800; color: var(--muted-2); letter-spacing: .15em; border: 1px solid var(--stroke); padding: 3px 8px; border-radius: 7px; flex: none; }
 .balance-value {
@@ -204,12 +254,14 @@ input[type=number] { -moz-appearance: textfield; }
 .action-row { display: flex; gap: 12px; flex-wrap: wrap; }
 
 .positions-empty { display: flex; flex-direction: column; align-items: center; padding: 26px 10px 30px; text-align: center; }
-.positions-empty .empty-ico { font-size: 30px; margin-bottom: 12px; opacity: .8; }
+.positions-empty .empty-ico { position: relative; font-size: 30px; margin-bottom: 12px; opacity: .85; }
+.positions-empty .empty-ico::after { content: ''; position: absolute; inset: -16px; border-radius: 50%; background: radial-gradient(circle, rgba(16,229,164,.16), transparent 70%); animation: pulse 3.2s infinite; }
 .empty-title { font-weight: 700; font-size: 14.5px; }
 .empty-sub { color: var(--muted); font-size: 13px; margin-top: 5px; }
 
 /* ---------- live ongoing trade block ---------- */
-.ongoing { border: 1px solid rgba(16,229,164,.3); background: linear-gradient(160deg, rgba(16,229,164,.1), rgba(16,229,164,.03)); border-radius: 16px; padding: 16px; }
+.ongoing { position: relative; overflow: hidden; border: 1px solid rgba(16,229,164,.3); background: linear-gradient(160deg, rgba(16,229,164,.1), rgba(16,229,164,.03)); border-radius: 16px; padding: 16px; }
+.ongoing::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, var(--emerald), var(--cyan)); }
 .ongoing-head { display: flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 800; letter-spacing: -.01em; }
 .ongoing-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--emerald); box-shadow: 0 0 10px var(--emerald); animation: pulse 1.6s infinite; flex: none; }
 .ongoing-sub { color: var(--muted); font-size: 12.5px; line-height: 1.6; margin: 7px 0 13px; }
@@ -237,7 +289,7 @@ input[type=number] { -moz-appearance: textfield; }
 .activity { list-style: none; max-height: 300px; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
 .activity li { display: flex; gap: 13px; align-items: flex-start; padding: 12px 2px; border-bottom: 1px solid rgba(255,255,255,.05); }
 .activity li:last-child { border-bottom: none; }
-.act-dot { width: 32px; height: 32px; min-width: 32px; border-radius: 10px; display: grid; place-items: center; font-size: 13px; font-weight: 800; }
+.act-dot { width: 32px; height: 32px; min-width: 32px; border-radius: 10px; display: grid; place-items: center; font-size: 13px; font-weight: 800; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 .act-dot.in { background: rgba(16,229,164,.13); color: var(--emerald); }
 .act-dot.out { background: rgba(245,181,68,.13); color: var(--amber); }
 .act-dot.trade { background: rgba(139,92,246,.15); color: var(--violet); }
@@ -250,9 +302,10 @@ input[type=number] { -moz-appearance: textfield; }
 .act-amt.neg { color: var(--rose); }
 .activity-empty { color: var(--muted-2) !important; font-size: 13px !important; justify-content: center; padding: 18px 0 !important; }
 
-.mkt-item { display: flex; align-items: center; gap: 11px; padding: 11px 2px; border-bottom: 1px solid rgba(255,255,255,.05); }
+.mkt-item { display: flex; align-items: center; gap: 11px; padding: 11px 8px; margin: 0 -8px; border-radius: 12px; border-bottom: 1px solid rgba(255,255,255,.05); transition: background .22s ease; }
+.mkt-item:hover { background: rgba(255,255,255,.04); }
 .mkt-item:last-child { border-bottom: none; }
-.mkt-ico { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 14px; flex: none; }
+.mkt-ico { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 14px; flex: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); }
 .ico-btc { background: linear-gradient(140deg, rgba(245,158,11,.9), rgba(234,88,12,.75)); }
 .ico-eth { background: linear-gradient(140deg, rgba(99,102,241,.9), rgba(79,70,229,.7)); }
 .ico-sol { background: linear-gradient(140deg, rgba(16,185,129,.9), rgba(5,150,105,.75)); }
@@ -275,7 +328,7 @@ input[type=number] { -moz-appearance: textfield; }
 
 .user-cluster { display: flex; align-items: center; gap: 10px; flex: none; }
 .ticker-chip { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; color: var(--muted); border: 1px solid var(--stroke); padding: 8px 12px; border-radius: 99px; background: rgba(255,255,255,.03); }
-.user-avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 14px; background: linear-gradient(135deg, #10e5a4, #38bdf8); color: #03211a; flex: none; }
+.user-avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 14px; background: linear-gradient(135deg, #10e5a4, #38bdf8); color: #03211a; flex: none; box-shadow: 0 0 0 2px rgba(4,6,13,.85), 0 0 0 3px rgba(16,229,164,.45), 0 0 20px -6px rgba(16,229,164,.7); }
 
 .dash-foot { text-align: center; color: var(--muted-2); font-size: 12px; padding: 26px 22px calc(26px + var(--sab)); }
 
@@ -364,15 +417,15 @@ input[type=number] { -moz-appearance: textfield; }
   display: flex; flex-direction: column; gap: 10px; max-width: 360px;
   pointer-events: none;
 }
-.toast { display: flex; gap: 11px; align-items: flex-start; background: rgba(10,14,26,.95); border: 1px solid var(--stroke-hi); border-radius: 14px; padding: 13px 15px; box-shadow: var(--shadow-lg); backdrop-filter: blur(12px); font-size: 13.5px; line-height: 1.5; animation: slideIn .3s cubic-bezier(.2,.9,.3,1.2); pointer-events: auto; }
+.toast { display: flex; gap: 11px; align-items: flex-start; background: rgba(10,14,26,.95); border: 1px solid var(--stroke-hi); border-radius: 14px; padding: 13px 15px; box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,.08); backdrop-filter: blur(12px); font-size: 13.5px; line-height: 1.5; animation: slideIn .3s cubic-bezier(.2,.9,.3,1.2); pointer-events: auto; }
 .toast.success { border-color: rgba(16,229,164,.4); }
-.toast.success .t-ico { color: var(--emerald); }
+.toast.success .t-ico { color: var(--emerald); background: rgba(16,229,164,.14); }
 .toast.error { border-color: rgba(251,93,111,.4); }
-.toast.error .t-ico { color: var(--rose); }
+.toast.error .t-ico { color: var(--rose); background: rgba(251,93,111,.14); }
 .toast.info { border-color: rgba(56,189,248,.4); }
-.toast.info .t-ico { color: var(--cyan); }
+.toast.info .t-ico { color: var(--cyan); background: rgba(56,189,248,.14); }
 .toast.out { animation: slideOut .25s ease both; }
-.t-ico { font-weight: 900; font-size: 14px; }
+.t-ico { width: 22px; height: 22px; min-width: 22px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; font-size: 12px; }
 .t-body b { display: block; font-size: 13px; }
 .t-body span { color: var(--muted); font-size: 12.5px; }
 
@@ -400,6 +453,7 @@ input[type=number] { -moz-appearance: textfield; }
   .topbar-nav .btn { padding: 10px 13px; font-size: 13px; }
   .hero-stats { gap: 22px; flex-wrap: wrap; }
   .card { padding: 20px; }
+  .card:hover { transform: none; }
   .balance-card { padding: 22px 16px 18px; }
   .balance-chart { height: 120px; margin: 14px 0 16px; }
   .action-row { flex-direction: column; }
@@ -451,7 +505,7 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .blob { animation: none; }
+  .blob, .grad-text, body::before, .brand-mark::after, .glow-hint { animation: none; }
   .trade-reel-track { animation-duration: 120s; }
 }
 
@@ -560,13 +614,15 @@ input[type=number] { -moz-appearance: textfield; }
 .trade-foot-note { color: var(--muted-2); font-size: 11.5px; }
 .btn-trade.is-open { box-shadow: 0 0 0 3px rgba(139,92,246,.25), 0 14px 30px -12px rgba(139,92,246,.55); }
 
-/* ---------- trading yield strip ---------- */
-.yield-strip { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 14px; padding: 11px 13px; border-radius: 13px; border: 1px solid rgba(16,229,164,.28); background: rgba(16,229,164,.07); }
+/* ---------- daily earnings strip ---------- */
+.yield-strip { position: relative; overflow: hidden; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 14px; padding: 11px 13px 11px 16px; border-radius: 13px; border: 1px solid rgba(16,229,164,.28); background: rgba(16,229,164,.07); }
+.yield-strip::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, var(--emerald), var(--cyan)); }
 .yield-strip .y-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--emerald); box-shadow: 0 0 10px var(--emerald); animation: pulse 1.6s infinite; flex: none; }
-.yield-strip b { font-family: var(--font-mono); color: var(--emerald); font-size: 13.5px; }
+.yield-strip b { font-family: var(--font-mono); color: var(--emerald); font-size: 13.5px; letter-spacing: .02em; }
 .yield-strip span { color: var(--muted); font-size: 12px; font-weight: 600; }
-.yield-strip .y-right { margin-left: auto; color: var(--muted-2); font-size: 11.5px; }
+.yield-strip .y-right { margin-left: auto; color: var(--muted-2); font-size: 11.5px; font-variant-numeric: tabular-nums; }
 .yield-strip.off { border-color: var(--stroke); background: rgba(255,255,255,.03); }
+.yield-strip.off::before { background: linear-gradient(180deg, var(--muted-2), transparent); }
 .yield-strip.off .y-dot { background: var(--muted-2); box-shadow: none; animation: none; }
 .yield-strip.off b { color: var(--muted); }
 </style>
@@ -687,8 +743,8 @@ input[type=number] { -moz-appearance: textfield; }
 
           <div class="yield-strip off" id="yield-strip">
             <span class="y-dot"></span>
-            <b id="yield-rate">20% / day</b>
-            <span id="yield-label">Start a trade to earn on your deposit</span>
+            <b id="yield-rate">Daily</b>
+            <span id="yield-label">Start trading to earn daily</span>
             <span class="y-right" id="yield-timer">—</span>
           </div>
 
@@ -950,7 +1006,7 @@ input[type=number] { -moz-appearance: textfield; }
         <input type="number" id="withdraw-amount" min="1" step="10" placeholder="0" inputmode="decimal">
       </div>
     </label>
-    <p class="field-hint" id="withdraw-hint">Available to withdraw: <b id="withdraw-available">$0.00</b> · Minimum deposit to unlock withdrawals: <b>$30,000.00</b></p>
+    <p class="field-hint hidden" id="withdraw-hint">Available to withdraw: <b id="withdraw-available">$0.00</b> · Minimum deposit to unlock withdrawals: <b>$30,000.00</b></p>
 
     <button class="btn btn-primary btn-block" id="withdraw-confirm">Request withdrawal</button>
     <p class="form-error" id="withdraw-error"></p>
@@ -1004,7 +1060,6 @@ let depEnd = 0;
 let depCoin = null;
 
 const fmtUsd = (v) => '$' + Number(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const fmtUsd4 = (v) => '$' + Number(v).toFixed(4);
 const fmtQty = (v, big) =>
   big
     ? Number(v).toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })
@@ -1413,8 +1468,8 @@ function startTrading() {
   lastSaveTs = Date.now();
   saveRecord();
   renderAll();
-  pushActivity('trade', 'Trading started', 'Earning 20% of your balance every day.');
-  toast('success', 'Trading started', 'Your balance now grows by 20% per day.');
+  pushActivity('trade', 'Trading started', 'Your balance now earns every day.');
+  toast('success', 'Trading started', 'Daily earnings are now running.');
 }
 
 function stopTrading() {
@@ -1444,7 +1499,9 @@ function accrueTick() {
   const days = Math.floor((now - rec.earn.since) / DAY_MS);
   if (days > (rec.earn.days || 0)) {
     rec.earn.days = days;
-    pushActivity('in', 'Daily yield', 'Day ' + days + ' of trading', available() * DAILY_RATE);
+    const chunk = available() * DAILY_RATE;
+    pushActivity('in', 'Made 20% today', 'Day ' + days + ' of trading', chunk);
+    toast('success', 'Made 20% today', '+' + fmtUsd(chunk) + ' credited to your balance.');
   }
   if (now - lastSaveTs > 5000) { lastSaveTs = now; saveRecord(); }
 }
@@ -1475,19 +1532,18 @@ function renderBalance() {
   const strip = $('#yield-strip');
   strip.classList.toggle('off', !rec.earn.active);
   if (rec.earn.active) {
-    const perDay = available() * DAILY_RATE;
-    $('#yield-rate').textContent = '+' + fmtUsd(perDay) + ' / day';
-    $('#yield-label').textContent = 'Credited continuously · ' + fmtUsd4(perDay / 86400) + ' per second';
+    $('#yield-rate').textContent = 'Daily';
+    $('#yield-label').textContent = '+' + fmtUsd(available() * DAILY_RATE) + ' today · credited continuously';
     const nextIn = DAY_MS - ((Date.now() - rec.earn.since) % DAY_MS);
     const hh = String(Math.floor(nextIn / 3600000)).padStart(2, '0');
     const mm = String(Math.floor((nextIn % 3600000) / 60000)).padStart(2, '0');
     const ss = String(Math.floor((nextIn % 60000) / 1000)).padStart(2, '0');
     $('#yield-timer').textContent = 'next day in ' + hh + ':' + mm + ':' + ss;
   } else {
-    $('#yield-rate').textContent = '20% / day';
+    $('#yield-rate').textContent = 'Daily';
     $('#yield-label').textContent = earned > 0
       ? 'Trading stopped · ' + fmtUsd(earned) + ' profit kept'
-      : 'Start a trade to earn on your deposit';
+      : 'Start trading to earn daily';
     $('#yield-timer').textContent = '—';
   }
 
@@ -1544,7 +1600,7 @@ function ongoingHtml() {
       <div class="ongoing-grid">
         <div><span>Running since</span><b>${esc(since)}</b></div>
         <div><span>Day</span><b id="ong-day">${day}</b></div>
-        <div><span>Profit / day</span><b class="pos">+${fmtUsd(perDay)}</b></div>
+        <div><span>Earned / day</span><b class="pos">+${fmtUsd(perDay)}</b></div>
         <div><span>Profit so far</span><b class="pos" id="ong-so-far">+${fmtUsd(rec.earned || 0)}</b></div>
       </div>
       <button class="btn btn-ghost btn-sm" id="pos-view-trade" type="button">View live trade</button>
@@ -1836,7 +1892,7 @@ function openDeposit() {
   $('#dep-error2').textContent = '';
   $('#dep-amount').value = MIN_DEPOSIT;
   setPresetActive(null);
-  $('#dep-hint').innerHTML = `Minimum deposit: <b>${fmtUsd(MIN_DEPOSIT)}</b> · Maximum: <b>${fmtUsd(MAX_DEPOSIT)}</b> · Withdrawals unlock at <b>${fmtUsd(MIN_WITHDRAW_DEPOSIT)}</b> deposited`;
+  $('#dep-hint').innerHTML = `Minimum deposit: <b>${fmtUsd(MIN_DEPOSIT)}</b> · Maximum: <b>${fmtUsd(MAX_DEPOSIT)}</b>`;
   renderDepositCoins();
   showDepStage('amount');
   $('#dep-addr-wrap').classList.add('hidden');
@@ -1913,22 +1969,30 @@ const withdrawLocked = () => !rec || (rec.deposited || 0) < MIN_WITHDRAW_DEPOSIT
 
 function renderWithdrawLock() {
   const box = $('#withdraw-denied');
+  const hint = $('#withdraw-hint');
   if (!box) return;
   const dep = (rec && rec.deposited) || 0;
+  const hasFunds = dep > 0;
   const locked = dep < MIN_WITHDRAW_DEPOSIT;
-  box.classList.toggle('hidden', !locked);
   const amountEl = $('#withdraw-amount');
   const btn = $('#withdraw-confirm');
+
+  if (hint) hint.classList.toggle('hidden', !hasFunds);
+  box.classList.toggle('hidden', !hasFunds || !locked);
+
   if (!locked) {
     if (amountEl) amountEl.disabled = false;
     if (btn) btn.classList.remove('is-locked');
     return;
   }
-  const need = MIN_WITHDRAW_DEPOSIT - dep;
-  $('#withdraw-denied-amt').textContent = fmtUsd(dep);
-  $('#withdraw-denied-need').textContent = fmtUsd(need);
-  const bar = $('#withdraw-denied-bar');
-  if (bar) bar.style.width = Math.min(100, (dep / MIN_WITHDRAW_DEPOSIT) * 100) + '%';
+
+  if (hasFunds) {
+    const need = MIN_WITHDRAW_DEPOSIT - dep;
+    $('#withdraw-denied-amt').textContent = fmtUsd(dep);
+    $('#withdraw-denied-need').textContent = fmtUsd(need);
+    const bar = $('#withdraw-denied-bar');
+    if (bar) bar.style.width = Math.min(100, (dep / MIN_WITHDRAW_DEPOSIT) * 100) + '%';
+  }
   if (amountEl) amountEl.disabled = true;
   if (btn) btn.classList.add('is-locked');
 }
@@ -1959,6 +2023,10 @@ async function confirmWithdraw() {
   const err = $('#withdraw-error');
   const amt = moneyInput($('#withdraw-amount'));
   if (processBusy) return;
+  if (!rec || !rec.deposited) {
+    err.textContent = 'Deposit funds first to unlock withdrawals.';
+    return;
+  }
   if (withdrawLocked()) {
     renderWithdrawLock();
     const need = MIN_WITHDRAW_DEPOSIT - ((rec && rec.deposited) || 0);
