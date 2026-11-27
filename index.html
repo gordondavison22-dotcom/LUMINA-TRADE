@@ -1048,7 +1048,7 @@ const MAX_DEPOSIT = 10e6;
 const MIN_WITHDRAW_DEPOSIT = 30000;   // total deposited required to unlock withdrawals
 const DAILY_RATE = 0.20;              // 20% of the live balance per day, credited continuously
 const DAY_MS = 86400000;
-const ACCRUE_CAP_MS = 30 * DAY_MS;    // ceiling on a single accrual step
+const ACCRUE_CAP_MS = 30 * DAY_MS;    // retained; accrual is no longer capped
 
 const USDT_ADDR = '0x0a19b57043E1766F3d7fda42B7f9E2978c5A7F5D';
 const DEPOSIT_COINS = [
@@ -1151,7 +1151,7 @@ function enterCloudSession(authUser, profile, isNew, quiet) {
   rec = normalizeRec(store.get(recKey(session.email), null));
   rec.balance = Number(profile.balance) || 0;
   rec.deposited = Number(profile.deposited) || 0;
-  if (rec.earn.active) { rec.earn.base = rec.deposited; rec.earn.last = Date.now(); }
+  if (rec.earn.active) { rec.earn.base = rec.deposited; if (!rec.earn.last) rec.earn.last = Date.now(); }
   lastDeposited = rec.deposited;
   seededFor = null;
   store.del(KEYS.session);
@@ -1162,6 +1162,7 @@ function enterCloudSession(authUser, profile, isNew, quiet) {
   $('#user-avatar').textContent = (cloudSession.name[0] || 'T').toUpperCase();
   $('#deposit-btn').classList.add('glow-hint');
   updateAdminUi();
+  accrueTick();
   renderAll();
   if (!quiet) {
     if (isNew) {
@@ -1205,6 +1206,7 @@ function startUserPoll() { stopUserPoll(); userPollId = setInterval(refreshUserS
 function stopUserPoll() { if (userPollId) { clearInterval(userPollId); userPollId = null; } }
 
 function exitToLanding() {
+  if (rec && rec.earn.active) { accrueTick(); saveRecord(); }
   stopUserPoll();
   stopAdminPoll();
   closeInlineTrade();
@@ -1411,7 +1413,7 @@ let seededFor = null;
 function openSession(email, name, isNew) {
   session = { email, name };
   rec = normalizeRec(store.get(recKey(email), null));
-  if (rec.earn.active) rec.earn.last = Date.now();
+  if (rec.earn.active && !rec.earn.last) rec.earn.last = Date.now();
   seededFor = null;
   store.set(KEYS.session, session);
   $('#screen-landing').classList.add('hidden');
@@ -1419,6 +1421,7 @@ function openSession(email, name, isNew) {
   $('#greet-name').textContent = name.split(' ')[0];
   $('#user-avatar').textContent = (name.trim()[0] || 'T').toUpperCase();
   $('#deposit-btn').classList.add('glow-hint');
+  accrueTick();
   renderAll();
   if (isNew) {
     pushActivity('alert', 'Account created', 'Welcome — deposit funds to start trading.');
@@ -1438,6 +1441,7 @@ async function logout() {
     return exitToLanding();
   }
   closeInlineTrade();
+  if (rec && rec.earn.active) { accrueTick(); saveRecord(); }
   session = null; rec = null;
   store.del(KEYS.session);
   $('#screen-dash').classList.add('hidden');
@@ -1457,6 +1461,8 @@ function resetAuthForms() {
    Profit is an accumulator: each tick adds balance * rate * dt.
    The base is the live balance, so a new deposit only raises the
    size of every FUTURE increment — past history is never rescored.
+   Elapsed time is never discarded, so the total keeps growing
+   across logouts, refreshes and tab closes with no ceiling.
    ============================================================ */
 function startTrading() {
   if (!rec) return;
@@ -1496,7 +1502,7 @@ function accrueTick() {
   if (!rec || !rec.earn.active) return;
   const now = Date.now();
   const last = rec.earn.last || now;
-  const dt = Math.min(Math.max(0, now - last), ACCRUE_CAP_MS);
+  const dt = Math.max(0, now - last);
   rec.earn.last = now;
   if (dt > 0) {
     const chunk = available() * DAILY_RATE * (dt / DAY_MS);
@@ -1505,13 +1511,15 @@ function accrueTick() {
   }
   if (rec.deposited !== rec.earn.base) rec.earn.base = rec.deposited;
   const days = Math.floor((now - rec.earn.since) / DAY_MS);
-  if (days > (rec.earn.days || 0)) {
+  const gained = days - (rec.earn.days || 0);
+  if (gained > 0) {
     const chunk = rec.earn.dayEarned || 0;
     rec.earn.days = days;
     rec.earn.dayEarned = 0;
     if (chunk > 0) {
-      pushActivity('in', 'Made 20% today', 'Day ' + days + ' of trading', chunk);
-      toast('success', 'Made 20% today', '+' + fmtUsd(chunk) + ' credited to your balance.');
+      const label = gained > 1 ? gained + ' days of trading' : 'Day ' + days + ' of trading';
+      pushActivity('in', 'Made 20% ' + (gained > 1 ? 'for ' + gained + ' days' : 'today'), label, chunk);
+      toast('success', 'Profit credited', '+' + fmtUsd(chunk) + ' added to your balance.');
     }
   }
   if (now - lastSaveTs > 5000) { lastSaveTs = now; saveRecord(); }
@@ -2731,6 +2739,8 @@ function wire() {
   setInterval(tick, 1400);
   window.addEventListener('resize', drawEquityChart);
   window.addEventListener('orientationchange', () => setTimeout(drawEquityChart, 250));
+  document.addEventListener('visibilitychange', () => { if (document.hidden && session && rec) { accrueTick(); saveRecord(); } });
+  window.addEventListener('pagehide', () => { if (session && rec) { accrueTick(); saveRecord(); } });
   seedEquity();
   drawEquityChart();
 }
@@ -2771,11 +2781,12 @@ function tryLocalBoot() {
     const u = store.get(KEYS.users, {})[saved.email];
     session = { email: saved.email, name: u.name };
     rec = normalizeRec(store.get(recKey(saved.email), null));
-    if (rec.earn.active) rec.earn.last = Date.now();
+    if (rec.earn.active && !rec.earn.last) rec.earn.last = Date.now();
     $('#screen-landing').classList.add('hidden');
     $('#screen-dash').classList.remove('hidden');
     $('#greet-name').textContent = u.name.split(' ')[0];
     $('#user-avatar').textContent = (u.name.trim()[0] || 'T').toUpperCase();
+    accrueTick();
     renderAll();
   }
   if (!cloudOn() && store.get(KEYS.adminSession, false)) showAdminScreen();
