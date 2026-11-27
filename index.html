@@ -1132,10 +1132,17 @@ function normalizeRec(r) {
   return r;
 }
 
-/* profit is a running total — never recomputed from a start time */
+/* Cloud earnings are authoritative in Supabase; this is only a live display estimate
+   between server refreshes. Offline demo mode keeps its local accumulator. */
 function earnedTotal() {
   if (!rec) return 0;
-  return rec.earned || 0;
+  const saved = Number(rec.earned) || 0;
+  if (session && session.cloud && rec.earn && rec.earn.active) {
+    const last = Number(rec.earn.last) || Date.now();
+    const dt = Math.max(0, Date.now() - last);
+    return saved + ((Number(rec.balance) || 0) + saved) * DAILY_RATE * dt / DAY_MS;
+  }
+  return saved;
 }
 
 /* withdrawals never debit the balance, so available is just balance + profit */
@@ -1144,15 +1151,43 @@ function available() {
   return Math.max(0, (rec.balance || 0) + earnedTotal());
 }
 
+function profileMillis(value) {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
+  const parsed = Date.parse(value || '');
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function oneProfile(data) {
+  return Array.isArray(data) ? (data[0] || null) : (data || null);
+}
+
+function applyCloudProfile(profile, notifyDeposit) {
+  if (!profile || !rec) return;
+  const dep = Number(profile.deposited) || 0;
+  if (notifyDeposit && dep > (lastDeposited || 0)) {
+    const added = dep - (lastDeposited || 0);
+    pushActivity('in', 'Deposit credited', 'Your deposit was approved and credited.', added);
+    toast('success', 'Deposit approved', fmtUsd(added) + ' was added to your balance.');
+  }
+  lastDeposited = dep;
+  rec.balance = Number(profile.balance) || 0;
+  rec.deposited = dep;
+  rec.earned = Number(profile.earned) || 0;
+  rec.earn.active = !!profile.earn_active;
+  rec.earn.since = profileMillis(profile.earn_since);
+  rec.earn.last = profileMillis(profile.earn_last) || Date.now();
+  rec.earn.base = dep;
+  rec.earn.days = rec.earn.active && rec.earn.since ? Math.floor((Date.now() - rec.earn.since) / DAY_MS) : 0;
+  rec.earn.dayEarned = 0;
+  saveRecord();
+}
+
 function enterCloudSession(authUser, profile, isNew, quiet) {
   const nm = ((profile.full_name || (authUser.user_metadata && authUser.user_metadata.full_name) || 'Trader') + '').trim();
   cloudSession = { uid: authUser.id, email: authUser.email, name: nm, role: profile.role || 'trader' };
   session = { email: cloudSession.email, name: cloudSession.name, uid: cloudSession.uid, role: cloudSession.role, cloud: true };
   rec = normalizeRec(store.get(recKey(session.email), null));
-  rec.balance = Number(profile.balance) || 0;
-  rec.deposited = Number(profile.deposited) || 0;
-  if (rec.earn.active) { rec.earn.base = rec.deposited; if (!rec.earn.last) rec.earn.last = Date.now(); }
-  lastDeposited = rec.deposited;
+  applyCloudProfile(profile, false);
   seededFor = null;
   store.del(KEYS.session);
   $('#screen-landing').classList.add('hidden');
@@ -1176,28 +1211,24 @@ function enterCloudSession(authUser, profile, isNew, quiet) {
   saveRecord();
   resetAuthForms();
   startUserPoll();
+  refreshUserState();
 }
 
 async function refreshUserState() {
   if (!cloudOn() || !session || !session.cloud) return;
-  const p = await fetchMyProfile(session.uid);
+  const c = sbClient();
+  if (!c) return;
+  let p = null;
+  try {
+    const { data, error } = await c.rpc('accrue_earnings');
+    if (!error) p = oneProfile(data);
+  } catch (e) {}
+  if (!p) p = await fetchMyProfile(session.uid);
   if (!p) return;
   const nm = ((p.full_name || session.name || '') + '').trim();
   if (nm) { cloudSession.name = nm; session.name = nm; }
   session.role = p.role || 'trader';
-  const bal = Number(p.balance) || 0;
-  const dep = Number(p.deposited) || 0;
-  if (dep > (lastDeposited || 0)) {
-    pushActivity('in', 'Deposit credited', 'Your deposit was approved and credited.', dep - (lastDeposited || 0));
-    toast('success', 'Deposit approved', fmtUsd(dep - (lastDeposited || 0)) + ' was added to your balance.');
-  }
-  lastDeposited = dep;
-  if (rec) {
-    rec.balance = bal;
-    rec.deposited = dep;
-    if (rec.earn.active) rec.earn.base = dep;
-    saveRecord();
-  }
+  applyCloudProfile(p, true);
   renderAll();
   if (!$('#withdraw-modal').classList.contains('hidden')) renderWithdrawLock();
   updateAdminUi();
@@ -1464,19 +1495,30 @@ function resetAuthForms() {
    Elapsed time is never discarded, so the total keeps growing
    across logouts, refreshes and tab closes with no ceiling.
    ============================================================ */
-function startTrading() {
+async function startTrading() {
   if (!rec) return;
   if (rec.earn.active) return;
   if (rec.deposited <= 0) {
     toast('info', 'Deposit first', 'You need an approved deposit before trading can start.');
     return;
   }
-  rec.earn.active = true;
-  rec.earn.since = Date.now();
-  rec.earn.last = Date.now();
-  rec.earn.base = rec.deposited;
-  rec.earn.days = 0;
-  rec.earn.dayEarned = 0;
+  if (session && session.cloud) {
+    const c = sbClient();
+    if (!c) return toast('error', 'Trading unavailable', 'Supabase is not reachable from this device.');
+    const { data, error } = await c.rpc('start_trading');
+    if (error) return toast('error', 'Could not start trading', error.message || 'Please try again.');
+    const profile = oneProfile(data);
+    if (!profile) return toast('info', 'Deposit first', 'You need an approved deposit before trading can start.');
+    applyCloudProfile(profile, false);
+    if (!rec.earn.active) return toast('info', 'Trading not started', 'The server did not activate trading for this account.');
+  } else {
+    rec.earn.active = true;
+    rec.earn.since = Date.now();
+    rec.earn.last = Date.now();
+    rec.earn.base = rec.deposited;
+    rec.earn.days = 0;
+    rec.earn.dayEarned = 0;
+  }
   lastSaveTs = Date.now();
   saveRecord();
   renderAll();
@@ -1484,15 +1526,25 @@ function startTrading() {
   toast('success', 'Trading started', 'Daily earnings are now running.');
 }
 
-function stopTrading() {
+async function stopTrading() {
   if (!rec || !rec.earn.active) return;
-  accrueTick();
-  rec.earn.active = false;
-  rec.earn.since = 0;
-  rec.earn.base = 0;
-  rec.earn.days = 0;
-  rec.earn.last = 0;
-  saveRecord();
+  if (session && session.cloud) {
+    const c = sbClient();
+    if (!c) return toast('error', 'Trading unavailable', 'Supabase is not reachable from this device.');
+    const { data, error } = await c.rpc('stop_trading');
+    if (error) return toast('error', 'Could not stop trading', error.message || 'Please try again.');
+    const profile = oneProfile(data);
+    if (!profile) return toast('error', 'Could not stop trading', 'No account profile was returned.');
+    applyCloudProfile(profile, false);
+  } else {
+    accrueTick();
+    rec.earn.active = false;
+    rec.earn.since = 0;
+    rec.earn.base = 0;
+    rec.earn.days = 0;
+    rec.earn.last = 0;
+    saveRecord();
+  }
   renderAll();
   pushActivity('trade', 'Trading stopped', 'Accrued ' + fmtUsd(rec.earned) + ' kept in your balance.');
   toast('info', 'Trading stopped', fmtUsd(rec.earned) + ' profit is kept — nothing is lost.');
@@ -1501,6 +1553,11 @@ function stopTrading() {
 function accrueTick() {
   if (!rec || !rec.earn.active) return;
   const now = Date.now();
+  if (session && session.cloud) {
+    const last = Number(rec.earn.last) || now;
+    rec.earn.dayEarned = ((Number(rec.balance) || 0) + (Number(rec.earned) || 0)) * DAILY_RATE * (Math.max(0, now - last) / DAY_MS);
+    return;
+  }
   const last = rec.earn.last || now;
   const dt = Math.max(0, now - last);
   rec.earn.last = now;
@@ -1607,8 +1664,8 @@ function ongoingHtml() {
       <div class="ongoing-grid">
         <div><span>Running since</span><b>${esc(since)}</b></div>
         <div><span>Day</span><b id="ong-day">${day}</b></div>
-        <div><span>Earned today</span><b class="pos" id="ong-day-earned">+${fmtUsd(rec.earn.dayEarned || 0)}</b></div>
-        <div><span>Profit so far</span><b class="pos" id="ong-so-far">+${fmtUsd(rec.earned || 0)}</b></div>
+        <div><span>Live accrual</span><b class="pos" id="ong-day-earned">+${fmtUsd(rec.earn.dayEarned || 0)}</b></div>
+        <div><span>Profit so far</span><b class="pos" id="ong-so-far">+${fmtUsd(earnedTotal())}</b></div>
       </div>
       <button class="btn btn-ghost btn-sm" id="pos-view-trade" type="button">View live trade</button>
     </div>`;
@@ -2680,7 +2737,7 @@ function tick() {
   renderBalance();
   if (rec.earn.active) {
     const so = $('#ong-so-far');
-    if (so) so.textContent = '+' + fmtUsd(rec.earned || 0);
+    if (so) so.textContent = '+' + fmtUsd(earnedTotal());
     const de = $('#ong-day-earned');
     if (de) de.textContent = '+' + fmtUsd(rec.earn.dayEarned || 0);
     const dy = $('#ong-day');
